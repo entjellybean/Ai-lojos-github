@@ -6,89 +6,73 @@ import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.Port;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.robotics.Color;
+import lejos.robotics.SampleProvider;
 import lejos.utility.Delay;
+
 public class ColorSensorTest {
    EV3ColorSensor colorSensor;
+
    EV3LargeRegulatedMotor leftMotor;
    EV3LargeRegulatedMotor rightMotor;
+
    public static void main(String[] args) {
        new ColorSensorTest();
    }
+
    public ColorSensorTest() {
        // Sensor and motor initialization
-       Port s3 = LocalEV3.get().getPort("S3");
-       colorSensor = new EV3ColorSensor(s3);
-      
+       Port s4 = LocalEV3.get().getPort("S4");
+       colorSensor = new EV3ColorSensor(s4);
+
        leftMotor = new EV3LargeRegulatedMotor(MotorPort.A);
        rightMotor = new EV3LargeRegulatedMotor(MotorPort.C);
        while (Button.ESCAPE.isUp()) {
            int currentDetectedColor = colorSensor.getColorID();
-          
+           System.out.print(currentDetectedColor);
+
            switch (currentDetectedColor) {
                case Color.RED:
                    // Adjust direction to follow the red line
                    followLine();
                    break;
                case Color.GREEN:
-                   // Turn 90 degrees when green is detected
                    turn90Degrees();
                    break;
-              
                case Color.BLUE:
-                   // Turn 90 degrees when green is detected
-                   turn90Degrees();
-                   break;
-               case Color.GRAY:
-                   // Turn 90 degrees when green is detected
                    turn90Degrees();
                    break;
                case Color.BLACK:
-                   // Turn 90 degrees when green is detected
-                   followLine();
+            	   grayOrWhite();
+                  break;
+               case Color.WHITE:
+                   grayOrWhite(); // Handle white or gray detection
                    break;
                default:
                    // Stop motors if no matching color
-                   stopMotors();
+                   moveForward();
                    break;
            }
-           Delay.msDelay(250);  // Small delay between sensor readings
+           Delay.msDelay(300);  // Small delay between sensor readings
        }
-      
+
        // Cleanup
        stopMotors();
        colorSensor.close();
    }
+
    // Function to follow the red line
    private void followLine() {
-       // Assuming a simple line-following method:
-       // If red is detected, go forward, otherwise make slight adjustments
-       float[] colorSample = new float[colorSensor.sampleSize()];
-       colorSensor.fetchSample(colorSample, 0);
        moveForward();
-   /*     if (colorSample[0] > 1) { // If sensor detects a stronger red signal
-           moveForward();
-       } else {
-           // Adjust to stay on the line (can modify this based on your robot's design)
-          //slightTurnLeft();
-       	slightTurnLeft();
-       }*/
    }
 
-  
    // Function to move forward
    private void moveForward() {
-       leftMotor.setSpeed(300);  // Set motor speed
-       rightMotor.setSpeed(300);
+       leftMotor.setSpeed(250);  // Set motor speed
+       rightMotor.setSpeed(250);
        leftMotor.forward();
        rightMotor.forward();
    }
-   // Function for slight left turn (to stay on the red line)
-/*   private void slightTurnLeft() {
-       leftMotor.setSpeed(100);  // Slow down the left motor
-       rightMotor.setSpeed(200);  // Right motor moves faster to adjust direction
-       leftMotor.forward();
-       rightMotor.forward();
-   }*/
+
    // Function to turn 90 degrees (right turn)
    private void turn90Degrees() {
        leftMotor.setSpeed(200);  // Left motor moves forward
@@ -97,11 +81,33 @@ public class ColorSensorTest {
        rightMotor.rotate(-180, true);
        leftMotor.waitComplete();  // Wait until the rotation is complete
        rightMotor.waitComplete();
+       moveForward();
    }
+
+   // Function to differentiate between gray or white
+   private void grayOrWhite() {
+       SampleProvider lightProvider = colorSensor.getRedMode();
+       float[] sample = new float[lightProvider.sampleSize()];
+       lightProvider.fetchSample(sample, 0);
+       float lightValue = sample[0] * 100; // Scale to percentage
+       for(int i=0; i<2;i++) {
+    	   System.out.println("Light Value: " + lightValue);
+	   }
+      
+       if (lightValue > 40 && lightValue < 80) {
+    	   
+         stopMotors();
+         Delay.msDelay(250);
+         turn90Degrees();
+         turn90Degrees();
+       } else {
+    	   moveForward();
+       }
+   }
+
    // Function to stop the motors
    private void stopMotors() {
        leftMotor.stop(true);
        rightMotor.stop(true);
    }
 }
-
