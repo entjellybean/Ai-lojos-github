@@ -8,4 +8,5 @@ The goal is to learn and implement AI algorithms in a Java program.
 The robot has to pick up pucks in the shortest amount of time, while competing with another robot.
 
 ### Main Packages 
- 
+
+Test
