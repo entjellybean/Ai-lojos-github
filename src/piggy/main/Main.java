@@ -1,7 +1,7 @@
 package Pack;
 import lejos.hardware.Button;
 
-public class Piggy {
+public class Main {
 
 	private int orientation;
 	protected static Deplacement moteur;
@@ -9,10 +9,10 @@ public class Piggy {
 
 
 
-	public Piggy(int a) {
+	public Main(int a) {
 		orientation=a;
 	}
-	public Piggy() {
+	public Main() {
 		this(90);
 	}
 	public static void main(String[] args) {
