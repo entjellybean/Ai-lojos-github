@@ -47,7 +47,7 @@ public class MouvementRobot {
      */
     public MovePilot obtenirPilot() {
         return moteurPilotage;
-    }
+    } 
 
     /**
      * Renvoie l'orientation actuelle du robot.
