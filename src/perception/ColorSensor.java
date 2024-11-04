@@ -17,10 +17,10 @@ public class ColorSensor {
    EV3LargeRegulatedMotor rightMotor;
 
    public static void main(String[] args) {
-       new ColorSensorTest();
+       new ColorSensor();
    }
 
-   public ColorSensorTest() {
+   public ColorSensor() {
        // Sensor and motor initialization
        Port s4 = LocalEV3.get().getPort("S4");
        colorSensor = new EV3ColorSensor(s4);
