@@ -1,0 +1,38 @@
+package Pack;
+import lejos.hardware.Button;
+import lejos.utility.Delay;
+
+
+public class boutonConsole {
+
+	public static void main(String[] args) {
+		boutonConsole bouton = new boutonConsole();
+		
+		bouton.positionRobot();
+		
+		System.out.print("J'ai fini");
+		Delay.msDelay(200);
+	}
+
+	public void positionRobot() {
+		
+		System.out.println("Ou est l'adversaire ?");
+		Button.waitForAnyPress(); // Attend la pression d'un bouton
+
+		boolean b = true;
+		while (b) {
+			if (Button.ENTER.isDown()) {
+				//mettre à jour l'attribut avec le robot au centre
+				b =false;
+			} else if (Button.LEFT.isDown()) {
+				//mettre à jour l'attribut avec le robot à gauche
+				b =false;
+			} else if (Button.RIGHT.isDown()) {
+				//mettre à jour l'attribut avec le robot à droite
+				b =false;
+			} 
+
+		}
+	}
+}
+
