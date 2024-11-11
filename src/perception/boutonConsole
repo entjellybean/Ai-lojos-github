@@ -1,4 +1,4 @@
-package Pack;
+package perception;
 import lejos.hardware.Button;
 import lejos.utility.Delay;
 
