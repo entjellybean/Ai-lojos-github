@@ -153,6 +153,6 @@ public class Deplacement {
 	}
 	
 	public void avancerVers1erPalet(Deplacement robot) {
-		robot.avancerDe(100); //vérifier longueur
+		robot.avancerDe(60); //vérifier longueur
 	}
 }
