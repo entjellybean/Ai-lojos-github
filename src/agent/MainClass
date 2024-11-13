@@ -8,101 +8,128 @@ import lejos.hardware.port.SensorPort;
 import lejos.robotics.SampleProvider;
 
 public class MainClass {
-    private Deplacement mouvementRobot;
-    private ColorSensor colorSensor;
-    private boutonConsole boutonConsole;
-    private EV3UltrasonicSensor ultrasonicSensor;
-    private static final double SAFE_DISTANCE = 0.2; 
-    private boolean isFirstPalletPicked = false;
-    private boolean isSecondPalletPicked = false;
+	private Deplacement mouvementRobot;
+	private Pince pince;
+	private ColorSensor colorSensor;
+	private BoutonConsole boutonConsole;
+	private EV3UltrasonicSensor ultrasonicSensor;
+	private static final double SAFE_DISTANCE = 0.2; 
+	private boolean isFirstPalletPicked = false;
+	private boolean isSecondPalletPicked = false;
+	private int positionRobotEnFace;
 
-    public MainClass() {
-        mouvementRobot = new Deplacement();
-        colorSensor = new ColorSensor();
-        boutonConsole = new boutonConsole();
-        ultrasonicSensor = new EV3UltrasonicSensor(SensorPort.S1); 
-    }
+	public MainClass() {
+		mouvementRobot = new Deplacement();
+		pince = new Pince();
+		colorSensor = new ColorSensor();
+		boutonConsole = new boutonConsole();
+		ultrasonicSensor = new EV3UltrasonicSensor(SensorPort.S1); 
+	}
 
-    public void start() {
-        System.out.println("wait...");
-        boutonConsole.positionRobot();
-        
-        while (Button.ESCAPE.isUp()) {
-            if (!isFirstPalletPicked) {
-                avancerVers1erPalet(mouvementRobot);
-                if (takePallet()) {
-                    goToWhiteLineAndDrop();
-                    isFirstPalletPicked = true;
-                }
-            } else if(!isSecondPalletPicked) {
-                goToSecondPalletAndPick();
-                } else{
-                searchAndCollectNextPallet();
-            }
-        }
-        System.out.println("stop.");
-        cleanup();
-    }
+	public static void main(String[] args) {
+		MainClass robot = new MainClass();
+		robot.start();
+	}
 
-    private boolean takePallet() {
-        return mouvementRobot.obtenirPilot().recupererPalet();
-    }
+	public void start() {
+		System.out.println("wait...");
+		positionRobotEnFace = boutonConsole.positionRobot();
 
-  private void goToWhiteLineAndDrop() {
-    while (!detectWhiteLine()) { 
-        mouvementRobot.avancerContinu(); 
+		while (Button.ESCAPE.isUp()) {
+			if (!isFirstPalletPicked) {
+				mouvementRobot.avancerVers1erPalet();
+				if (takePallet()) {
+					goToWhiteLineAndDrop();
+					isFirstPalletPicked = true;
+				}
+			} else if(!isSecondPalletPicked) {
+				goToSecondPalletAndPick();
+			} else{
+				searchAndCollectNextPallet();
+			}
+		}
+		System.out.println("stop.");
+		Delay.msDelay(2000);
+		cleanup();
+	}
 
-        if (detectObstacle()) { 
-            mouvementRobot.arretImmediat(); 
-            mouvementRobot.reculerDe(10); 
-        }
-    }
+	private boolean takePallet() { 
+		// c'est la pince qu'il faut utiliser pour utiliser la méthode récupérer palet
+		return pince.recupererPalet();
+	}
 
-    mouvementRobot.arretImmediat(); 
-    mouvementRobot.lacherPalet(); 
-}
+	private void goToWhiteLineAndDrop() {
+		while (!detectWhiteLine()) { 
+			mouvementRobot.avancerContinu(); 
+			if (detectObstacle()) { 
+				eviterObstacle();
+				/*mouvementRobot.arretImmediat(); 
+				mouvementRobot.reculerDe(10); */
+			}
+		}
+		mouvementRobot.arretImmediat(); 
+		pince.lacherPalet(); // j'ai changé parce que le lacher palet est sur la pince
+	}
 
 
 
-    private void goToSecondPalletAndPick() { // ajouter while
-        
-        mouvementRobot.avancerDe(30); 
-        if (!detectObstacle()) {
-            takePallet(); 
-        }
-    }
+	private void goToSecondPalletAndPick() { // Z a modifié le code
 
-    private void searchAndCollectNextPallet() { // à vérifier plus tard
-        mouvementRobot.avancerContinu();
-        
-        while (!detectWhiteLine() && !takePallet()) {
-            if (detectObstacle()) {
-                mouvementRobot.arretImmediat();
-                mouvementRobot.pivoterDroite(45); 
-            }
-            Delay.msDelay(100);
-        }
-    }
+		boolean b = false;
+		//s'orienter vers le palet qui n'a pas bougé en fonction de "position"
+		if (positionRobotEnFace == 0) {
+			//si le robot est à gauche
+			
+		} else if (positionRobotEnFace == 1) {
+			//si le robot est au milieu
+			
+		} else if (positionRobotEnFace == 2) {
+			//si le robot est à droite
+			
+		}
+		//aller vers le palet
+		while (b == false) {
+			mouvementRobot.avancerDe(30); 
+			if (detectObstacle()) {
+				eviterObstacle(); //créer une méthode pour éviter le robot
+			} else {
+				b = takePallet(); 
+			}
+		}
 
-    private boolean detectWhiteLine() {
-        return colorSensor.detectWhiteLine(); 
-    }
+	}
 
-    private boolean detectObstacle() { // tester la classe + changer la méthode pour avoir la distance en face
-        SampleProvider distance = ultrasonicSensor.getDistanceMode();
-        float[] sample = new float[distance.sampleSize()];
-        distance.fetchSample(sample, 0);
-        return sample[0] < SAFE_DISTANCE;
-    }
+	private void searchAndCollectNextPallet() {
+		// à vérifier lundi (voir en fonction de ce que Narta a fait)
+		mouvementRobot.avancerContinu();
 
-    private void cleanup() {
-        mouvementRobot.arretImmediat();
-        ultrasonicSensor.close();
-        colorSensor.close();
-    }
+		while (!detectWhiteLine() && !takePallet()) {
+			if (detectObstacle()) {
+				mouvementRobot.arretImmediat();
+				mouvementRobot.pivoterDroite(45); 
+			}
+			Delay.msDelay(100);
+		}
+	}
 
-    public static void main(String[] args) {
-        MainClass robot = new MainClass();
-        robot.start();
-    }
+	private boolean detectWhiteLine() {
+		return colorSensor.detectWhiteLine(); //Il faut créer la méthode detectWhiteLine()
+	}
+
+	private boolean detectObstacle() { // tester la classe + changer la méthode pour avoir la distance en face
+		SampleProvider distance = ultrasonicSensor.getDistanceMode();
+		float[] sample = new float[distance.sampleSize()];
+		distance.fetchSample(sample, 0);
+		return sample[0] < SAFE_DISTANCE;
+	}
+
+	private void eviterObstacle() {
+		// à définir
+	}
+
+	private void cleanup() {
+		mouvementRobot.arretImmediat();
+		ultrasonicSensor.close();
+		colorSensor.close(); //créer la méthode close() pour colorSensor
+	}
 }
