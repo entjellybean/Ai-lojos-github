@@ -3,10 +3,10 @@ import lejos.hardware.Button;
 import lejos.utility.Delay;
 
 
-public class boutonConsole {
+public class BoutonConsole {
 
 	public static void main(String[] args) {
-		boutonConsole bouton = new boutonConsole();
+		boutonConsole bouton = new BoutonConsole();
 		
 		bouton.positionRobot();
 		
