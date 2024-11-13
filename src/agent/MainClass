@@ -33,7 +33,7 @@ public class MainClass {
                     goToWhiteLineAndDrop();
                     isFirstPalletPicked = true;
                 }
-            } else {
+            } else { //ajouter un if pour le 2nd palet
                 
                 goToSecondPalletAndPick();
                 
@@ -48,16 +48,16 @@ public class MainClass {
         return mouvementRobot.obtenirPilot().recupererPalet();
     }
 
-    private void goToWhiteLineAndDrop() {
+    private void goToWhiteLineAndDrop() { // ajouter while
         mouvementRobot.avancerDe(50); 
-        if (detectObstacle()) {
-            mouvementRobot.reculerDe(10); 
+        if (detectObstacle()) { 
+            mouvementRobot.reculerDe(10); //réfléchir à l'action
         }
-        mouvementRobot.retourInitial();
+        mouvementRobot.retourInitial(); //enlever
         mouvementRobot.lacherPalet(); 
     }
 
-    private void goToSecondPalletAndPick() {
+    private void goToSecondPalletAndPick() { // ajouter while
         
         mouvementRobot.avancerDe(30); 
         if (!detectObstacle()) {
@@ -65,7 +65,7 @@ public class MainClass {
         }
     }
 
-    private void searchAndCollectNextPallet() {
+    private void searchAndCollectNextPallet() { // à vérifier plus tard
         mouvementRobot.avancerContinu();
         
         while (!detectWhiteLine() && !takePallet()) {
@@ -81,7 +81,7 @@ public class MainClass {
         return colorSensor.detectWhiteLine(); 
     }
 
-    private boolean detectObstacle() {
+    private boolean detectObstacle() { // tester la classe + changer la méthode pour avoir la distance en face
         SampleProvider distance = ultrasonicSensor.getDistanceMode();
         float[] sample = new float[distance.sampleSize()];
         distance.fetchSample(sample, 0);
