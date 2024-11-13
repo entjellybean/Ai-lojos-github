@@ -8,14 +8,14 @@ import lejos.hardware.port.SensorPort;
 import lejos.robotics.SampleProvider;
 
 public class MainClass {
-    private MouvementRobot mouvementRobot;
+    private Deplacement mouvementRobot;
     private ColorSensor colorSensor;
     private boutonConsole boutonConsole;
     private EV3UltrasonicSensor ultrasonicSensor;
     private static final double SAFE_DISTANCE = 0.2; 
 
     public MainClass() {
-        mouvementRobot = new MouvementRobot();
+        mouvementRobot = new Deplacement();
         colorSensor = new ColorSensor();
         boutonConsole = new boutonConsole();
         ultrasonicSensor = new EV3UltrasonicSensor(SensorPort.S1); 
