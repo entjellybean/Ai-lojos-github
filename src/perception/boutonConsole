@@ -14,7 +14,7 @@ public class BoutonConsole {
 		Delay.msDelay(200);
 	}
 
-	public String positionRobot() {
+	public int positionRobot() {
 
 		//renvoie un integer en fonction de la position
 		
