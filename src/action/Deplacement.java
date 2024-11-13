@@ -41,8 +41,8 @@ public class Deplacement {
     public void setOrientation(double nouvelAngle) {
         this.orientation = nouvelAngle;
     }
-    public void avancerVers1erPalet(Deplacement robot) {
-		robot.avancerDe(100); //vérifier longueur
+    public void avancerVers1erPalet() {
+		this.avancerDe(100); //vérifier longueur
 	}
     /**
      * Récupère l'instance de MovePilot.
