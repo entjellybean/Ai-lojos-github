@@ -1,6 +1,6 @@
 import lejos.hardware.Button;
 import lejos.utility.Delay;
-import action.MouvementRobot;
+import action.Deplacement;
 import perception.ColorSensor;
 import perception.boutonConsole;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
@@ -10,9 +10,10 @@ import lejos.robotics.SampleProvider;
 public class MainClass {
     private Deplacement mouvementRobot;
     private ColorSensor colorSensor;
-    private BoutonConsole boutonConsole;
+    private boutonConsole boutonConsole;
     private EV3UltrasonicSensor ultrasonicSensor;
     private static final double SAFE_DISTANCE = 0.2; 
+    private boolean isFirstPalletPicked = false;
 
     public MainClass() {
         mouvementRobot = new Deplacement();
@@ -26,15 +27,20 @@ public class MainClass {
         boutonConsole.positionRobot();
         
         while (Button.ESCAPE.isUp()) {
-            
-            if (takePallet()) {
-               
-                goToWhiteLineAndDrop();
-               
+            if (!isFirstPalletPicked) {
+                
+                if (takePallet()) {
+                    goToWhiteLineAndDrop();
+                    isFirstPalletPicked = true;
+                }
+            } else {
+                
+                goToSecondPalletAndPick();
+                
                 searchAndCollectNextPallet();
             }
         }
-        System.out.println("stop");
+        System.out.println("stop.");
         cleanup();
     }
 
@@ -47,13 +53,21 @@ public class MainClass {
         if (detectObstacle()) {
             mouvementRobot.reculerDe(10); 
         }
-        mouvementRobot.retourInitial(); 
+        mouvementRobot.retourInitial();
         mouvementRobot.lacherPalet(); 
+    }
+
+    private void goToSecondPalletAndPick() {
+        
+        mouvementRobot.avancerDe(30); 
+        if (!detectObstacle()) {
+            takePallet(); 
+        }
     }
 
     private void searchAndCollectNextPallet() {
         mouvementRobot.avancerContinu();
-       
+        
         while (!detectWhiteLine() && !takePallet()) {
             if (detectObstacle()) {
                 mouvementRobot.arretImmediat();
