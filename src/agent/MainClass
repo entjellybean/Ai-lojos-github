@@ -28,7 +28,7 @@ public class MainClass {
         
         while (Button.ESCAPE.isUp()) {
             if (!isFirstPalletPicked) {
-                
+                avancerVers1erPalet(mouvementRobot);
                 if (takePallet()) {
                     goToWhiteLineAndDrop();
                     isFirstPalletPicked = true;
