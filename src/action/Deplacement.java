@@ -155,46 +155,4 @@ public class Deplacement {
 	public void avancerVers1erPalet(Deplacement robot) {
 		robot.avancerDe(100); //vérifier longueur
 	}
-	
-	public static void main(String[] args) {
-		// Crée une instance de la classe Deplacement pour contrôler le robot
-		Deplacement robot = new Deplacement();
-
-		// Avancer de 20 cm
-		/*System.out.println("Avancer de 20 cm");
-		robot.avancerDe(20);
-
-		// Pause pour observer le mouvement
-		//  attendre(2000);
-
-		// Reculer de 20 cm
-		System.out.println("Reculer de 20 cm");
-		robot.reculerDe(20);
-
-		// Pause pour observer le mouvement
-		//  attendre(2000);
-
-		// Pivoter à gauche de 90 degrés
-		System.out.println("Pivoter à gauche de 90 degrés");
-		robot.pivoterGauche(90);
-
-		// Pause pour observer le mouvement
-		//   attendre(2000);
-
-		// Pivoter à droite de 90 degrés
-		System.out.println("Pivoter à droite de 90 degrés");
-		robot.pivoterDroite(90);*/
-
-		// Avancer en continu (le robot avancera jusqu'à ce qu'il soit arrêté)
-		System.out.println("Avancer en continu");
-		robot.avancerContinu();
-
-		System.out.println("Orientation");
-		robot.allerVersOrientation(90);
-		
-		
-		robot.retourInitial();
-		
-		robot.ajusterOrientation(90);
-	}
 }
