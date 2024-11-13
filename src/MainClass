@@ -10,7 +10,7 @@ import lejos.robotics.SampleProvider;
 public class MainClass {
     private Deplacement mouvementRobot;
     private ColorSensor colorSensor;
-    private boutonConsole boutonConsole;
+    private BoutonConsole boutonConsole;
     private EV3UltrasonicSensor ultrasonicSensor;
     private static final double SAFE_DISTANCE = 0.2; 
 
