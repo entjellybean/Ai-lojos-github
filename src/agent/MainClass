@@ -14,6 +14,7 @@ public class MainClass {
     private EV3UltrasonicSensor ultrasonicSensor;
     private static final double SAFE_DISTANCE = 0.2; 
     private boolean isFirstPalletPicked = false;
+    private boolean isSecondPalletPicked = false;
 
     public MainClass() {
         mouvementRobot = new Deplacement();
@@ -33,10 +34,9 @@ public class MainClass {
                     goToWhiteLineAndDrop();
                     isFirstPalletPicked = true;
                 }
-            } else { //ajouter un if pour le 2nd palet
-                
+            } else if(!isSecondPalletPicked) {
                 goToSecondPalletAndPick();
-                
+                } else{
                 searchAndCollectNextPallet();
             }
         }
@@ -48,14 +48,21 @@ public class MainClass {
         return mouvementRobot.obtenirPilot().recupererPalet();
     }
 
-    private void goToWhiteLineAndDrop() { // ajouter while
-        mouvementRobot.avancerDe(50); 
+  private void goToWhiteLineAndDrop() {
+    while (!detectWhiteLine()) { 
+        mouvementRobot.avancerContinu(); 
+
         if (detectObstacle()) { 
-            mouvementRobot.reculerDe(10); //réfléchir à l'action
+            mouvementRobot.arretImmediat(); 
+            mouvementRobot.reculerDe(10); 
         }
-        mouvementRobot.retourInitial(); //enlever
-        mouvementRobot.lacherPalet(); 
     }
+
+    mouvementRobot.arretImmediat(); 
+    mouvementRobot.lacherPalet(); 
+}
+
+
 
     private void goToSecondPalletAndPick() { // ajouter while
         
