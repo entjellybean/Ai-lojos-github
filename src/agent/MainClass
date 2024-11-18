@@ -87,7 +87,7 @@ public class MainClass {
 			//si le robot est au milieu
 			//(90+61,846)=151,846
 			mouvementRobot.pivoterDroite(151);
-			
+
 		} else if (positionRobotEnFace == 2) {
 			//si le robot est à droite
 			//(90+61,846)=151,846
@@ -107,7 +107,7 @@ public class MainClass {
 
 	private void searchAndCollectNextPallet() {
 		// à vérifier lundi (voir en fonction de ce que Narta a fait)
-		
+
 
 		while (!colorSensor.detecteLigneBlanche() && !takePallet()) {
 			mouvementRobot.avancerDe(30);
@@ -120,7 +120,7 @@ public class MainClass {
 
 	private boolean detectObstacle() { // tester la classe + changer la méthode pour avoir la distance en face
 		if (moveScan.getCurrentDistance()>=30){
-                 return false;
+			return false;
 		}
 		return true;
 	}
@@ -128,22 +128,22 @@ public class MainClass {
 	private void eviterObstacle() {
 		//à vérifier si on détecte le mur
 		boolean b = true;
-int cpt=0;
-float distancleObstacle = moveScan.getCurrentDistance();
+		int cpt=0;
+		float distancleObstacle = moveScan.getCurrentDistance();
 		while(b){
 			mouvementRobot.tournerDroite(10);
-cpt+=10;
-		if (!detectObstacle()){
-b = false;
-}
-}
-int avancer = (int) Math.sqrt(Math.power(distanceObstacle,2)+225);
-mouvementRobot(avancer);
-mouvementRobot.tournerGauche(cpt);
-mouvementRobot(avancer);
+			cpt+=10;
+			if (!detectObstacle()){
+				b = false;
+			}
+		}
+		int avancer = (int) Math.sqrt(Math.power(distanceObstacle,2)+225);
+		mouvementRobot(avancer);
+		mouvementRobot.tournerGauche(cpt);
+		mouvementRobot(avancer);
 
 
-}
+	}
 
 	private void cleanup() {
 		mouvementRobot.arretImmediat();
