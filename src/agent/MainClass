@@ -92,7 +92,7 @@ public class MainClass {
 		} else if (positionRobotEnFace == 2) {
 			//si le robot est à droite
 			//(90+61,846)=151,846
-			mouvementRobot.pivoterDroite(151);
+			mouvementRobot.pivoterGauche(151);
 		}
 		//aller vers le palet
 		while (b == false) {
