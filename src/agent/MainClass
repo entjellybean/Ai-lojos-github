@@ -122,7 +122,7 @@ public class MainClass {
 		while(!colorSensor.detecteLigneBlanche()){
 		mouvementRobot.avancerDe(1);
 		}
-
+		pince.lacherPalet();
 		
 	}
 
