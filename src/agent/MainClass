@@ -39,6 +39,9 @@ public class MainClass {
 			if (!isFirstPalletPicked) {
 				mouvementRobot.avancerVers1erPalet();
 				if (takePallet()) {
+					mouvementRobot.pivoterDroite(90);
+					mouvementRobot.avancerDe(24);
+					mouvementRobot.pivoterGauche(90);
 					goToWhiteLineAndDrop();
 					isFirstPalletPicked = true;
 				}
@@ -60,21 +63,18 @@ public class MainClass {
 	}
 
 	private void goToWhiteLineAndDrop() {
-		while (!colorSensor.detecteLigneBlanche()) { 
-			mouvementRobot.avancerContinu(); 
+		while (!colorSensor.detecteLigneBlanche()) { //regarder quand ça s'arrête
+			mouvementRobot.avancerDe(25); 
 			if (detectObstacle()) { 
 				eviterObstacle();
-				/*mouvementRobot.arretImmediat(); 
-				mouvementRobot.reculerDe(10); */
 			}
 		}
-		mouvementRobot.arretImmediat(); 
-		pince.lacherPalet(); // j'ai changé parce que le lacher palet est sur la pince
+		pince.lacherPalet();
 	}
 
 
 
-	private void goToSecondPalletAndPick() { // Z a modifié le code
+	private void goToSecondPalletAndPick() {
 
 		//on suppose qu'on est au milieu du rectangle
 		boolean b = false;
@@ -127,15 +127,18 @@ public class MainClass {
 	}
 
 	private void searchAndCollectNextPallet() {
-		// à vérifier lundi (voir en fonction de ce que Narta a fait)
-
+		
+//Faire un 360 pour détecter un palet
+if(){
+//Si on ne trouve pas de palet
+}
 		
 		
 	}
 
 
 	private boolean detectObstacle() { // tester la classe + changer la méthode pour avoir la distance en face
-		if (moveScan.getCurrentDistance()>=30){
+		if (moveScan.getCurrentDistance()>=25){
 			return false;
 		}
 		return true;
