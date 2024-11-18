@@ -95,14 +95,8 @@ public class MainClass {
 			mouvementRobot.pivoterGauche(151);
 		}
 		//aller vers le palet
-		while (b == false) {
-			mouvementRobot.avancerDe(62); 
-			if (detectObstacle()) {
-				eviterObstacle(); //créer une méthode pour éviter le robot
-			} else {
-				b = takePallet(); 
-			}
-		}
+		mouvementRobot.avancerDe(62);
+		takePallet();
 
 	}
 
