@@ -14,7 +14,9 @@ public class BoutonConsole {
 		Delay.msDelay(200);
 	}
 
-	public void positionRobot() {
+	public int positionRobot() {
+
+		//renvoie un integer en fonction de la position
 		
 		System.out.println("Ou est l'adversaire ?");
 		Button.waitForAnyPress(); // Attend la pression d'un bouton
@@ -24,15 +26,17 @@ public class BoutonConsole {
 			if (Button.ENTER.isDown()) {
 				//mettre à jour l'attribut avec le robot au centre
 				b =false;
+				return 1;
 			} else if (Button.LEFT.isDown()) {
 				//mettre à jour l'attribut avec le robot à gauche
 				b =false;
+				return 0;
 			} else if (Button.RIGHT.isDown()) {
 				//mettre à jour l'attribut avec le robot à droite
 				b =false;
+				return 2;
 			} 
 
 		}
 	}
 }
-
