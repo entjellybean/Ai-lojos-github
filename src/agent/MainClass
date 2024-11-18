@@ -75,21 +75,27 @@ public class MainClass {
 
 	private void goToSecondPalletAndPick() { // Z a modifié le code
 
+		//on suppose qu'on est au milieu du rectangle
 		boolean b = false;
 		//s'orienter vers le palet qui n'a pas bougé en fonction de "position"
 		if (positionRobotEnFace == 0) {
 			//si le robot est à gauche
-			
+			//-(90+61,846)=-151,846
+			mouvementRobot.pivoterGauche(151);
+
 		} else if (positionRobotEnFace == 1) {
 			//si le robot est au milieu
+			//(90+61,846)=151,846
+			mouvementRobot.pivoterDroite(151);
 			
 		} else if (positionRobotEnFace == 2) {
 			//si le robot est à droite
-			
+			//(90+61,846)=151,846
+			mouvementRobot.pivoterDroite(151);
 		}
 		//aller vers le palet
 		while (b == false) {
-			mouvementRobot.avancerDe(30); 
+			mouvementRobot.avancerDe(62); 
 			if (detectObstacle()) {
 				eviterObstacle(); //créer une méthode pour éviter le robot
 			} else {
