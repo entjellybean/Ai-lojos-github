@@ -59,7 +59,7 @@ public class MainClass {
 	}
 
 	private void goToWhiteLineAndDrop() {
-		while (!detectWhiteLine()) { 
+		while (!colorSensor.detecteLigneBlanche()) { 
 			mouvementRobot.avancerContinu(); 
 			if (detectObstacle()) { 
 				eviterObstacle();
@@ -112,9 +112,6 @@ public class MainClass {
 		}
 	}
 
-	private boolean detectWhiteLine() {
-		return colorSensor.detectWhiteLine(); //Il faut créer la méthode detectWhiteLine()
-	}
 
 	private boolean detectObstacle() { // tester la classe + changer la méthode pour avoir la distance en face
 		SampleProvider distance = ultrasonicSensor.getDistanceMode();
