@@ -12,7 +12,7 @@ public class MainClass {
 	private Pince pince;
 	private ColorSensor colorSensor;
 	private BoutonConsole boutonConsole;
-	private EV3UltrasonicSensor ultrasonicSensor;
+	private MoveScan moveScan;
 	private static final double SAFE_DISTANCE = 0.2; 
 	private boolean isFirstPalletPicked = false;
 	private boolean isSecondPalletPicked = false;
@@ -22,8 +22,8 @@ public class MainClass {
 		mouvementRobot = new Deplacement();
 		pince = new Pince();
 		colorSensor = new ColorSensor();
-		boutonConsole = new boutonConsole();
-		ultrasonicSensor = new EV3UltrasonicSensor(SensorPort.S1); 
+		boutonConsole = new BoutonConsole();
+		moveScan = new MoveScan(); 
 	}
 
 	public static void main(String[] args) {
