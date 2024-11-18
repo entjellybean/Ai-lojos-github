@@ -23,7 +23,7 @@ public class MainClass {
 		pince = new Pince();
 		colorSensor = new ColorSensor();
 		boutonConsole = new boutonConsole();
-		ultrasonicSensor = new EV3UltrasonicSensor(SensorPort.S1); 
+		moveScan = new MoveScan(); 
 	}
 
 	public static void main(String[] args) {
