@@ -12,7 +12,7 @@ public class MainClass {
 	private Pince pince;
 	private ColorSensor colorSensor;
 	private BoutonConsole boutonConsole;
-	private EV3UltrasonicSensor ultrasonicSensor;
+	private Movescan moveScan;
 	private static final double SAFE_DISTANCE = 0.2; 
 	private boolean isFirstPalletPicked = false;
 	private boolean isSecondPalletPicked = false;
