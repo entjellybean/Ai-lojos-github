@@ -107,28 +107,43 @@ public class MainClass {
 
 	private void searchAndCollectNextPallet() {
 		// à vérifier lundi (voir en fonction de ce que Narta a fait)
-		mouvementRobot.avancerContinu();
+		
 
-		while (!detectWhiteLine() && !takePallet()) {
+		while (!colorSensor.detecteLigneBlanche() && !takePallet()) {
+			mouvementRobot.avancerDe(30);
 			if (detectObstacle()) {
-				mouvementRobot.arretImmediat();
-				mouvementRobot.pivoterDroite(45); 
+				eviterObstacle();
 			}
-			Delay.msDelay(100);
 		}
 	}
 
 
 	private boolean detectObstacle() { // tester la classe + changer la méthode pour avoir la distance en face
-		SampleProvider distance = ultrasonicSensor.getDistanceMode();
-		float[] sample = new float[distance.sampleSize()];
-		distance.fetchSample(sample, 0);
-		return sample[0] < SAFE_DISTANCE;
+		if (moveScan.getCurrentDistance()>=30){
+                 return false;
+		}
+		return true;
 	}
 
 	private void eviterObstacle() {
-		// à définir
-	}
+		//à vérifier si on détecte le mur
+		boolean b = true;
+int cpt=0;
+float distancleObstacle = moveScan.getCurrentDistance();
+		while(b){
+			mouvementRobot.tournerDroite(10);
+cpt+=10;
+		if (!detectObstacle()){
+b = false;
+}
+}
+int avancer = (int) Math.sqrt(Math.power(distanceObstacle,2)+225);
+mouvementRobot(avancer);
+mouvementRobot.tournerGauche(cpt);
+mouvementRobot(avancer);
+
+
+}
 
 	private void cleanup() {
 		mouvementRobot.arretImmediat();
