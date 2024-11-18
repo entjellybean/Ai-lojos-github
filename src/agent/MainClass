@@ -83,33 +83,54 @@ public class MainClass {
 			//si le robot est à gauche
 			//-(90+61,846)=-151,846
 			mouvementRobot.pivoterGauche(151);
+			mouvementRobot.setOrientation(-151);
 
 		} else if (positionRobotEnFace == 1) {
 			//si le robot est au milieu
 			//(90+61,846)=151,846
 			mouvementRobot.pivoterDroite(151);
-
+			mouvementRobot.setOrientation(151);
 		} else if (positionRobotEnFace == 2) {
 			//si le robot est à droite
 			//(90+61,846)=151,846
 			mouvementRobot.pivoterGauche(151);
+			mouvementRobot.setOrientation(-151);
 		}
 		//aller vers le palet
 		mouvementRobot.avancerDe(62);
 		takePallet();
 
+		//aller à la ligne blanche
+		if (positionRobotEnFace == 0) {
+			//si le robot est à gauche
+			//-(90+61,846)=-151,846
+			mouvementRobot.pivoterDroite(151);
+			mouvementRobot.setOrientation(0);
+
+		} else if (positionRobotEnFace == 1) {
+			//si le robot est au milieu
+			//(90+61,846)=151,846
+			mouvementRobot.pivoterGauche(151);
+			mouvementRobot.setOrientation(0);
+		} else if (positionRobotEnFace == 2) {
+			//si le robot est à droite
+			//(90+61,846)=151,846
+			mouvementRobot.pivoterDroite(151);
+			mouvementRobot.setOrientation(0);
+		}
+		mouvementRobot.avancerDe(56);
+		while(!colorSensor.detecteLigneBlanche()){
+		mouvementRobot.avancerDe(1);
+		}
+
+		
 	}
 
 	private void searchAndCollectNextPallet() {
 		// à vérifier lundi (voir en fonction de ce que Narta a fait)
 
-
-		while (!colorSensor.detecteLigneBlanche() && !takePallet()) {
-			mouvementRobot.avancerDe(30);
-			if (detectObstacle()) {
-				eviterObstacle();
-			}
-		}
+		
+		
 	}
 
 
