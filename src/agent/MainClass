@@ -128,9 +128,16 @@ public class MainClass {
 
 	private void searchAndCollectNextPallet() {
 		
-//Faire un 360 pour détecter un palet
-if(){
-//Si on ne trouve pas de palet
+pivoterGauche(180);
+avancerDe(124);
+if(takePallet()){
+pivoterDroite(180);
+avancerDe(124);
+pince.lacherPalet();
+} else {
+moveScan.moveWhile();
+float distance = moveScan.getCurrentDistance();
+avancerDe(distance);
 }
 		
 		
