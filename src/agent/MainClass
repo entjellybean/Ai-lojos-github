@@ -68,7 +68,7 @@ public class MainClass {
 
 	private void goToWhiteLineAndDrop() {
 		while (!colorSensor.detecteLigneBlanche()) { //regarder quand ça s'arrête
-			mouvementRobot.avancerDe(25); 
+			mouvementRobot.moveForward(); 
 			if (detectObstacle()) { 
 				eviterObstacle();
 			}
