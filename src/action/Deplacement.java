@@ -27,10 +27,11 @@ public class Deplacement {
      */
     public Deplacement() {
         // Configure le diamètre et l'écartement des roues en centimètres
-        Wheel roueGauche = WheeledChassis.modelWheel(Motor.A, 5.6).offset(-6.0);  // Configuration de la roue gauche
-        Wheel roueDroite = WheeledChassis.modelWheel(Motor.C, 5.6).offset(6.0);   // Configuration de la roue droite
+        Wheel roueGauche = WheeledChassis.modelWheel(Motor.A, 5.6).offset(-6.075);  // Configuration de la roue gauche
+        Wheel roueDroite = WheeledChassis.modelWheel(Motor.C, 5.6).offset(6.075);   // Configuration de la roue droite
         Chassis baseRoues = new WheeledChassis(new Wheel[] {roueGauche, roueDroite}, WheeledChassis.TYPE_DIFFERENTIAL);
         moteurPilotage = new MovePilot(baseRoues);
+        moteurPilotage.setLinearSpeed((50)); // Vitesse linéaire définie à 10 cm/s
         moteurPilotage.setAngularSpeed(50); // Vitesse de rotation modérée
     }
 
@@ -76,10 +77,9 @@ public class Deplacement {
     /**
      * Lance un déplacement en avant sans limite de distance (le robot avance jusqu'à l'arrêt).
      */
-    public void avancerDe() {
+    public void avancerContinu() {
         moteurPilotage.forward();
     }
-
     /**
      * Recule le robot d'une distance spécifiée en centimètres.
      * @param distance Centimètres à parcourir en arrière
@@ -207,7 +207,7 @@ public class Deplacement {
 
         // Avancer en continu (le robot avancera jusqu'à ce qu'il soit arrêté)
         System.out.println("Avancer en continu");
-        robot.avancerDe();
+        robot.avancerContinu();
 
         
     }
