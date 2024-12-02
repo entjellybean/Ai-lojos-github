@@ -10,20 +10,20 @@ import perception.MoveScan;
 
 public class MainClass {
 	private Deplacement mouvementRobot;
-	//private Pince pince;
+//	private Pince pince;
 	private ColorSensor colorSensor;
 	private BoutonConsole boutonConsole;
-	//private MoveScan moveScan;
+	private MoveScan moveScan;
 	private boolean isFirstPalletPicked = false;
 	private boolean isSecondPalletPicked = false;
 	private int positionRobotEnFace;
 
 	public MainClass() {
 		mouvementRobot = new Deplacement();
-		//pince = new Pince();
+	//	pince = new Pince();
 		colorSensor = new ColorSensor();
 		boutonConsole = new BoutonConsole();
-		//moveScan = new MoveScan(); 
+		moveScan = new MoveScan(); 
 	}
 
 	public static void main(String[] args) {
@@ -32,10 +32,10 @@ public class MainClass {
 	}
 
 	public void start() {
-		System.out.println("wait...");
-		positionRobotEnFace = boutonConsole.positionRobot();
+		//System.out.println("wait...");
+		/*positionRobotEnFace = boutonConsole.positionRobot();
 
-		/*while (Button.ESCAPE.isUp()) {
+		while (Button.ESCAPE.isUp()) {
 			if (!isFirstPalletPicked) {
 				mouvementRobot.avancerVers1erPalet();
 				if (truetakePallet()) {
@@ -45,7 +45,7 @@ public class MainClass {
 					goToWhiteLineAndDrop();
 					isFirstPalletPicked = true;
 				}
-				//pince.lacher();
+				pince.lacher();
 			} else if(!isSecondPalletPicked) {
 				goToSecondPalletAndPick();
 				isSecondPalletPicked = true;
@@ -53,8 +53,10 @@ public class MainClass {
 				searchAndCollectNextPallet();
 			}
 		}*/
-		mouvementRobot.moveForward();
+		//mouvementRobot.avancerContinu();
+		goToWhiteLineAndDrop();
 		//System.out.println(positionRobotEnFace);
+		//System.out.println(colorSensor.detecteLigneBlanche());
 		System.out.println("stop.");
 		Delay.msDelay(2000);
 		cleanup();
@@ -67,13 +69,21 @@ public class MainClass {
 	}
 
 	private void goToWhiteLineAndDrop() {
-		while (!colorSensor.detecteLigneBlanche()) { //regarder quand ça s'arrête
-			mouvementRobot.moveForward(); 
+		mouvementRobot.avancerContinu(true);
+		boolean res = false;
+		System.out.println("Is moving : "+mouvementRobot.isMoving());
+		while (mouvementRobot.isMoving() && !res) { //regarder quand ça s'arrête
+			//mouvementRobot.avancerContinu();
+			res= colorSensor.detecteLigneBlanche();
+			System.out.println(res);
 			if (detectObstacle()) { 
 				eviterObstacle();
 			}
 		}
+		mouvementRobot.stop();
 		//pince.lacherPalet();
+		Delay.msDelay(2000);
+		
 	}
 
 
@@ -170,7 +180,7 @@ public class MainClass {
 	}
 
 	private void cleanup() {
-		mouvementRobot.arretImmediat();
+		mouvementRobot.stop();
 		//moveScan.close();
 		colorSensor.close(); //créer la méthode close() pour colorSensor
 		//pince.close();
