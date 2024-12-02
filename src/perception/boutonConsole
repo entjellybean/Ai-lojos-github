@@ -1,11 +1,23 @@
-package perception;
+
 import lejos.hardware.Button;
 import lejos.utility.Delay;
 
-
 public class BoutonConsole {
-
-	public int positionRobot() {
+	
+	/*boutonConsole(){
+		//rien à instancier
+	}
+	*/
+	public static void main(String[] args) {
+		boutonConsole bouton = new boutonConsole();
+		
+		bouton.positionRobot();
+		
+		System.out.print("J'ai fini");
+		Delay.msDelay(200);
+	}
+	
+	public String positionRobot() {
 
 		//renvoie un integer en fonction de la position
 		
@@ -21,14 +33,14 @@ public class BoutonConsole {
 			} else if (Button.LEFT.isDown()) {
 				//mettre à jour l'attribut avec le robot à gauche
 				b =false;
-				return 2;
+				return 0;
 			} else if (Button.RIGHT.isDown()) {
 				//mettre à jour l'attribut avec le robot à droite
 				b =false;
-				return 0;
+				return 2;
 			} 
 
 		}
-return 4;
 	}
+	
 }
