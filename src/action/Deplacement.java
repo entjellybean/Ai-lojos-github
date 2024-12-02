@@ -31,7 +31,7 @@ public class Deplacement {
         Wheel roueDroite = WheeledChassis.modelWheel(Motor.C, 5.6).offset(6.075);   // Configuration de la roue droite
         Chassis baseRoues = new WheeledChassis(new Wheel[] {roueGauche, roueDroite}, WheeledChassis.TYPE_DIFFERENTIAL);
         moteurPilotage = new MovePilot(baseRoues);
-        moteurPilotage.setLinearSpeed((50)); // Vitesse linéaire définie à 10 cm/s
+        moteurPilotage.setLinearSpeed((20)); // Vitesse linéaire définie à 10 cm/s
         moteurPilotage.setAngularSpeed(50); // Vitesse de rotation modérée
     }
 
@@ -77,8 +77,10 @@ public class Deplacement {
     /**
      * Lance un déplacement en avant sans limite de distance (le robot avance jusqu'à l'arrêt).
      */
-    public void avancerContinu() {
-        moteurPilotage.forward();
+    public void avancerContinu(boolean b) {
+    	//b = true -> Fait une action en même temps
+        moteurPilotage.travel(300, b);
+      
     }
     /**
      * Recule le robot d'une distance spécifiée en centimètres.
@@ -178,32 +180,6 @@ public class Deplacement {
         // Crée une instance de la classe Deplacement pour contrôler le robot
         Deplacement robot = new Deplacement();
 
-        // Avancer de 20 cm
-        System.out.println("Avancer de 20 cm");
-        robot.avancerDe(20);
-
-     // Tester l'orientation du robot vers la ligne adverse
-        System.out.println("Orientation initiale : " + robot.obtenirOrientation());
-        robot.orienterVersLigneAdverse();
-        System.out.println("Orientation après ajustement : " + robot.obtenirOrientation());
-    
-
-        // Reculer de 20 cm
-        System.out.println("Reculer de 20 cm");
-        robot.reculerDe(20);
-
-       
-
-        // Pivoter à gauche de 90 degrés
-        System.out.println("Pivoter à gauche de 90 degrés");
-        robot.pivoterGauche(90);
-
-        
-        // Pivoter à droite de 90 degrés
-        System.out.println("Pivoter à droite de 90 degrés");
-        robot.pivoterDroite(90);
-
-      
 
         // Avancer en continu (le robot avancera jusqu'à ce qu'il soit arrêté)
         System.out.println("Avancer en continu");
