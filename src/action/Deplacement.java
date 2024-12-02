@@ -31,7 +31,7 @@ public class Deplacement {
         Wheel roueDroite = WheeledChassis.modelWheel(Motor.C, 5.6).offset(6.075);   // Configuration de la roue droite
         Chassis baseRoues = new WheeledChassis(new Wheel[] {roueGauche, roueDroite}, WheeledChassis.TYPE_DIFFERENTIAL);
         moteurPilotage = new MovePilot(baseRoues);
-        moteurPilotage.setLinearSpeed((20)); // Vitesse linéaire définie à 10 cm/s
+        moteurPilotage.setLinearSpeed(20); // Vitesse linéaire définie à 10 cm/s
         moteurPilotage.setAngularSpeed(50); // Vitesse de rotation modérée
     }
 
@@ -183,7 +183,7 @@ public class Deplacement {
 
         // Avancer en continu (le robot avancera jusqu'à ce qu'il soit arrêté)
         System.out.println("Avancer en continu");
-        robot.avancerContinu();
+        robot.avancerContinu(true);
 
         
     }
