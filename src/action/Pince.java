@@ -17,8 +17,9 @@ public class Pince {
 
 	// Constructeur pour initialiser le moteur de la pince
 	public Pince() {
+		Port s3 = LocalEV3.get().getPort("S3");
 		motorPince = new EV3LargeRegulatedMotor(MotorPort.B); 
-		bouton=new EV3TouchSensor(SensorPort.S3);
+		bouton=new EV3TouchSensor(s3);
 		
 	}
 
