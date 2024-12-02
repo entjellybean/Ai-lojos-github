@@ -158,7 +158,11 @@ public class MainClass {
 	      mouvementRobot.pivoterGauche(180);
               mouvementRobot.avancerDe(50);
                moveScan.moveWhile();
-               moveScan.moveForward();
+               recupererPalet();
+             //ici on doit faire setOriantation mais comment on va le faire si on detect l'angle juste avec moveWhile()?
+               goToWhiteLineAndDrop();
+              
+              
 			if (detectObstacle()) { 
 				eviterObstacle();
 			}
