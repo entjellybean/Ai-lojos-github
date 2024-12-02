@@ -1,6 +1,11 @@
 package agent;
 import lejos.hardware.Button;
-
+import lejos.hardware.ev3.LocalEV3;
+import lejos.hardware.motor.EV3LargeRegulatedMotor;
+import lejos.hardware.motor.Motor;
+import lejos.hardware.motor.NXTRegulatedMotor;
+import lejos.hardware.port.Port;
+import lejos.hardware.port.SensorPort;
 import lejos.utility.Delay;
 import action.Deplacement;
 import action.Pince;
@@ -10,7 +15,7 @@ import perception.MoveScan;
 
 public class MainClass {
 	private Deplacement mouvementRobot;
-//	private Pince pince;
+	private Pince pince;
 	private ColorSensor colorSensor;
 	private BoutonConsole boutonConsole;
 	private MoveScan moveScan;
@@ -19,11 +24,20 @@ public class MainClass {
 	private int positionRobotEnFace;
 
 	public MainClass() {
-		mouvementRobot = new Deplacement();
-	//	pince = new Pince();
-		colorSensor = new ColorSensor();
+    	Port A = LocalEV3.get().getPort("A");
+    	Port B = LocalEV3.get().getPort("B");
+    	Port C = LocalEV3.get().getPort("C");
+    	Port s2 = LocalEV3.get().getPort("S2");
+    	Port s3 = LocalEV3.get().getPort("S3");
+    	Port s4 = LocalEV3.get().getPort("S4");
+    	
+				
+		mouvementRobot = new Deplacement(motorA,motorC);
+		colorSensor = new ColorSensor(s4);
 		boutonConsole = new BoutonConsole();
-		moveScan = new MoveScan(); 
+		moveScan = new MoveScan(mouvementRobot,s2); 
+		pince = new Pince(B,s3);
+		
 	}
 
 	public static void main(String[] args) {
@@ -54,7 +68,7 @@ public class MainClass {
 			}
 		}*/
 		//mouvementRobot.avancerContinu();
-		goToWhiteLineAndDrop();
+		detectObstacle();
 		//System.out.println(positionRobotEnFace);
 		//System.out.println(colorSensor.detecteLigneBlanche());
 		System.out.println("stop.");
@@ -152,16 +166,16 @@ public class MainClass {
 
 
 	private boolean detectObstacle() { // tester la classe + changer la méthode pour avoir la distance en face
-		/*if (moveScan.getCurrentDistance()>=25){
+		if (moveScan.getCurrentDistance()>=25){
 			return false;
 		}
-		return true;*/
-		return false;
+		return true;
+		//return false;
 	}
 
 	private void eviterObstacle() {
 		//à vérifier si on détecte le mur
-		/*boolean b = true;
+		boolean b = true;
 		int cpt=0;
 		float distanceObstacle = moveScan.getCurrentDistance();
 		while(b){
@@ -176,12 +190,12 @@ public class MainClass {
 		mouvementRobot.pivoterGauche(cpt);
 		mouvementRobot.avancerDe(avancer);
 
-		 */
+		 
 	}
 
 	private void cleanup() {
 		mouvementRobot.stop();
-		//moveScan.close();
+		moveScan.close();
 		colorSensor.close(); //créer la méthode close() pour colorSensor
 		//pince.close();
 	}
