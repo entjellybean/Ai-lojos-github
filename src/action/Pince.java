@@ -1,24 +1,34 @@
+package action;
 
 import lejos.hardware.ev3.LocalEV3;
+
+
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
+import lejos.hardware.motor.EV3MediumRegulatedMotor;
+import lejos.hardware.motor.Motor;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.Port;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.robotics.Color;
 import lejos.robotics.SampleProvider;
+import lejos.robotics.chassis.Chassis;
+import lejos.robotics.navigation.MovePilot;
 import lejos.utility.Delay;
 import lejos.hardware.port.SensorPort;
 
 public class Pince {
 
-	private static EV3TouchSensor bouton;  // Capteur connecté au port S2
-	private EV3LargeRegulatedMotor motorPince;// Moteur connecté au port B
+	private EV3TouchSensor bouton;  // Capteur connecté au port S3
+	//private EV3LargeRegulatedMotor motorPince;// Moteur connecté au port B
 
+	EV3MediumRegulatedMotor motorPince;
+	
 	// Constructeur pour initialiser le moteur de la pince
 	public Pince() {
 		Port s3 = LocalEV3.get().getPort("S3");
-		motorPince = new EV3LargeRegulatedMotor(MotorPort.B); 
+		Port B = LocalEV3.get().getPort("B");
+		motorPince = new EV3MediumRegulatedMotor(B); 
 		bouton=new EV3TouchSensor(s3);
 		
 	}
@@ -57,11 +67,11 @@ public class Pince {
 		ouvrir(1800);
 	}
 	
-	public void lacherApresLigneBlanche() {
+/*	public void lacherApresLigneBlanche() {
 		// Lache le palet une fois que la ligne détectée
 		// Renvoie true s'il est lâché
 		ColorSensorTest c = new ColorSensorTest(this);
-	}
+	}*/
 
 	public float verificationPalet() {
 		//
@@ -77,22 +87,25 @@ public class Pince {
 		a.fetchSample(sample,0);
 		return (float) sample[0] *100;
 	}
+	public void close() {
+		this.motorPince.close();
+	}
 	
-	public static void main(String[] args) {
+/*	public static void main(String[] args) {
 		// Initialise l'application
 		Pince app = new Pince();
 		
 		// Test		
 		//app.recupererPalet();
 		
-		app.recupererPalet();
-		
+		app.ouvrir(100);
+		app.fermer(100);
 		//System.out.print(app.lacherApresLigneBlanche());
 		
 
 		//app.lacherPalet();
 		// Ferme le moteur après utilisation
 		app.motorPince.close();
-	}
+	}*/
 
 }
