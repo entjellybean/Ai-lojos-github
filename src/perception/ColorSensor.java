@@ -38,4 +38,7 @@ public class ColorSensor {
        } 
        return b;
    }
+public void close() {
+		colorSensor.close();
+	}
 }
