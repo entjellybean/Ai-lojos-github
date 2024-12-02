@@ -1,6 +1,12 @@
 package action;
 
+import lejos.hardware.ev3.LocalEV3;
+import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.Motor;
+import lejos.hardware.motor.NXTRegulatedMotor;
+import lejos.hardware.port.MotorPort;
+import lejos.hardware.port.Port;
+import lejos.robotics.RegulatedMotor;
 import lejos.robotics.chassis.Chassis;
 import lejos.robotics.chassis.Wheel;
 import lejos.robotics.chassis.WheeledChassis;
@@ -19,20 +25,23 @@ public class Deplacement {
     /**
      * Orientation actuelle du robot, en degrés. 0 représente le nord, aligné avec l’adversaire.
      */
-    private double orientation = 0;
+    private double orientation;
 
     /**
      * Constructeur pour initialiser le système de déplacement.
      * Configure les roues et initialise le MovePilot.
      */
-    public Deplacement() {
+    public Deplacement(Port A,Port C) {
         // Configure le diamètre et l'écartement des roues en centimètres
-        Wheel roueGauche = WheeledChassis.modelWheel(Motor.A, 5.6).offset(-6.075);  // Configuration de la roue gauche
-        Wheel roueDroite = WheeledChassis.modelWheel(Motor.C, 5.6).offset(6.075);   // Configuration de la roue droite
+    	EV3LargeRegulatedMotor motorA = new EV3LargeRegulatedMotor(A);
+    	EV3LargeRegulatedMotor motorC = new EV3LargeRegulatedMotor(C);
+    	Wheel roueGauche = WheeledChassis.modelWheel(A, 5.6).offset(-6.075);  // Configuration de la roue gauche
+        Wheel roueDroite = WheeledChassis.modelWheel(C, 5.6).offset(6.075);   // Configuration de la roue droite
         Chassis baseRoues = new WheeledChassis(new Wheel[] {roueGauche, roueDroite}, WheeledChassis.TYPE_DIFFERENTIAL);
         moteurPilotage = new MovePilot(baseRoues);
         moteurPilotage.setLinearSpeed(20); // Vitesse linéaire définie à 10 cm/s
         moteurPilotage.setAngularSpeed(50); // Vitesse de rotation modérée
+        orientation = 0;
     }
 
     /**
@@ -176,15 +185,15 @@ public class Deplacement {
         System.out.println("Le robot est maintenant orienté vers la ligne adverse.");
     }
    
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         // Crée une instance de la classe Deplacement pour contrôler le robot
-        Deplacement robot = new Deplacement();
+        
 
 
         // Avancer en continu (le robot avancera jusqu'à ce qu'il soit arrêté)
         System.out.println("Avancer en continu");
-        robot.avancerContinu(true);
+
 
         
-    }
+    }*/
 }
