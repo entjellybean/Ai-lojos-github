@@ -16,6 +16,7 @@ import lejos.robotics.chassis.Chassis;
 import lejos.robotics.navigation.MovePilot;
 import lejos.utility.Delay;
 import lejos.hardware.port.SensorPort;
+import lejos.hardware.port.TachoMotorPort;
 
 public class Pince {
 
@@ -25,9 +26,8 @@ public class Pince {
 	EV3MediumRegulatedMotor motorPince;
 	
 	// Constructeur pour initialiser le moteur de la pince
-	public Pince() {
-		Port s3 = LocalEV3.get().getPort("S3");
-		Port B = LocalEV3.get().getPort("B");
+	public Pince(Port B,Port s3) {
+		
 		motorPince = new EV3MediumRegulatedMotor(B); 
 		bouton=new EV3TouchSensor(s3);
 		
