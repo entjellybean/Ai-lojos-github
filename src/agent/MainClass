@@ -154,14 +154,16 @@ public class MainClass {
 	}
 
 	private void searchAndCollectNextPallet() {
-
-		//Faire un 360 pour détecter un palet
-
-		/*if(){
-//Si on ne trouve pas de palet
-}*/
-
-
+         while (Button.ESCAPE.isUp()) { 
+	      mouvementRobot.pivoterGauche(180);
+              mouvementRobot.avancerDe(50);
+               moveScan.moveWhile();
+               moveScan.moveForward();
+			if (detectObstacle()) { 
+				eviterObstacle();
+			}
+           cleanup();
+      
 	}
 
 
