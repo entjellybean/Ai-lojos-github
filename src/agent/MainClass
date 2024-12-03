@@ -1,5 +1,6 @@
 package agent;
 import lejos.hardware.Button;
+
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.Motor;
@@ -24,20 +25,20 @@ public class MainClass {
 	private int positionRobotEnFace;
 
 	public MainClass() {
-    	Port A = LocalEV3.get().getPort("A");
-    	Port B = LocalEV3.get().getPort("B");
-    	Port C = LocalEV3.get().getPort("C");
-    	Port s2 = LocalEV3.get().getPort("S2");
-    	Port s3 = LocalEV3.get().getPort("S3");
-    	Port s4 = LocalEV3.get().getPort("S4");
-    	
-				
-		mouvementRobot = new Deplacement(motorA,motorC);
+		Port A = LocalEV3.get().getPort("A");
+		Port B = LocalEV3.get().getPort("B");
+		Port C = LocalEV3.get().getPort("C");
+		Port s2 = LocalEV3.get().getPort("S2");
+		Port s3 = LocalEV3.get().getPort("S3");
+		Port s4 = LocalEV3.get().getPort("S4");
+
+
+		mouvementRobot = new Deplacement(A,C);
 		colorSensor = new ColorSensor(s4);
 		boutonConsole = new BoutonConsole();
 		moveScan = new MoveScan(mouvementRobot,s2); 
 		pince = new Pince(B,s3);
-		
+
 	}
 
 	public static void main(String[] args) {
@@ -46,20 +47,23 @@ public class MainClass {
 	}
 
 	public void start() {
-		//System.out.println("wait...");
-		/*positionRobotEnFace = boutonConsole.positionRobot();
+		System.out.println("wait...");
+		positionRobotEnFace = boutonConsole.positionRobot();
 
-		while (Button.ESCAPE.isUp()) {
+		mouvementRobot.avancerDe(50);
+		//pince.ouvrir(1700);//à supprimer
+		//pince.fermer(100);//à supprimer
+		/*while (Button.ESCAPE.isUp()) {
 			if (!isFirstPalletPicked) {
 				mouvementRobot.avancerVers1erPalet();
-				if (truetakePallet()) {
+				if (pince.recupererPalet()) {
 					mouvementRobot.pivoterDroite(90);
-					mouvementRobot.avancerDe(24);
-					mouvementRobot.pivoterGauche(90);
+					mouvementRobot.avancerDe(26);
+					mouvementRobot.pivoterGauche(85);//companser angle robot
 					goToWhiteLineAndDrop();
 					isFirstPalletPicked = true;
 				}
-				pince.lacher();
+				pince.lacherPalet();
 			} else if(!isSecondPalletPicked) {
 				goToSecondPalletAndPick();
 				isSecondPalletPicked = true;
@@ -67,12 +71,13 @@ public class MainClass {
 				searchAndCollectNextPallet();
 			}
 		}*/
+		moveScan.RechercheEtOrientation();
 		//mouvementRobot.avancerContinu();
-		detectObstacle();
-		//System.out.println(positionRobotEnFace);
+		//goToWhiteLineAndDrop();
+		//System.out.println(detectObstacle());
 		//System.out.println(colorSensor.detecteLigneBlanche());
 		System.out.println("stop.");
-		Delay.msDelay(2000);
+		//Delay.msDelay(2000);
 		cleanup();
 	}
 
@@ -90,14 +95,14 @@ public class MainClass {
 			//mouvementRobot.avancerContinu();
 			res= colorSensor.detecteLigneBlanche();
 			System.out.println(res);
-			if (detectObstacle()) { 
+			/*if (detectObstacle()) { 
 				eviterObstacle();
-			}
+			}*/
 		}
 		mouvementRobot.stop();
-		//pince.lacherPalet();
+		//pince.lacherPalet();                    
 		Delay.msDelay(2000);
-		
+
 	}
 
 
@@ -124,8 +129,8 @@ public class MainClass {
 			mouvementRobot.setOrientation(-151);
 		}
 		//aller vers le palet
-		mouvementRobot.avancerDe(62);
-		takePallet();
+		mouvementRobot.avancerDe(48);
+		pince.recupererPalet();
 
 		//aller à la ligne blanche
 		if (positionRobotEnFace == 0) {
@@ -145,29 +150,30 @@ public class MainClass {
 			mouvementRobot.pivoterDroite(151);
 			mouvementRobot.setOrientation(0);
 		}
-		mouvementRobot.avancerDe(56);
-		while(!colorSensor.detecteLigneBlanche()){
-			mouvementRobot.avancerDe(1);
+		mouvementRobot.avancerContinu(true);
+		boolean res = colorSensor.detecteLigneBlanche();
+		while(!res){
+			res = colorSensor.detecteLigneBlanche();
+			System.out.println(res);
 		}
-		//pince.lacherPalet();
-
+		mouvementRobot.stop();
+		pince.lacherPalet();
 	}
 
 	private void searchAndCollectNextPallet() {
-         while (Button.ESCAPE.isUp()) { 
-	      mouvementRobot.pivoterGauche(180);
-              mouvementRobot.avancerDe(50);
-               moveScan.moveWhile();
-               recupererPalet();
-             mouvementRobot.orianterVersLigneAdverse();
-               goToWhiteLineAndDrop();
-              
-              
-			if (detectObstacle()) { 
-				eviterObstacle();
-			}
-           cleanup();
-      
+
+		//Faire un 360 pour détecter un palet
+
+		/*if(){
+//Si on ne trouve pas de palet
+}*/ 
+		mouvementRobot.pivoterGauche(180);
+		mouvementRobot.avancerDe(120,true);
+		//if (detectObstacle())
+		moveScan.RechercheEtOrientation();
+		pince.recupererPalet();
+		mouvementRobot.orienterVersLigneAdverse();
+		goToWhiteLineAndDrop();
 	}
 
 
@@ -196,7 +202,7 @@ public class MainClass {
 		mouvementRobot.pivoterGauche(cpt);
 		mouvementRobot.avancerDe(avancer);
 
-		 
+
 	}
 
 	private void cleanup() {
