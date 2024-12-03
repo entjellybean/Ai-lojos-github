@@ -35,8 +35,8 @@ public class Deplacement {
         // Configure le diamètre et l'écartement des roues en centimètres
     	EV3LargeRegulatedMotor motorA = new EV3LargeRegulatedMotor(A);
     	EV3LargeRegulatedMotor motorC = new EV3LargeRegulatedMotor(C);
-    	Wheel roueGauche = WheeledChassis.modelWheel(A, 5.6).offset(-6.075);  // Configuration de la roue gauche
-        Wheel roueDroite = WheeledChassis.modelWheel(C, 5.6).offset(6.075);   // Configuration de la roue droite
+    	Wheel roueGauche = WheeledChassis.modelWheel(motorA, 5.6).offset(-6.075);  // Configuration de la roue gauche
+        Wheel roueDroite = WheeledChassis.modelWheel(motorC, 5.6).offset(6.075);   // Configuration de la roue droite
         Chassis baseRoues = new WheeledChassis(new Wheel[] {roueGauche, roueDroite}, WheeledChassis.TYPE_DIFFERENTIAL);
         moteurPilotage = new MovePilot(baseRoues);
         moteurPilotage.setLinearSpeed(20); // Vitesse linéaire définie à 10 cm/s
@@ -52,12 +52,16 @@ public class Deplacement {
         orientation = (nouvelAngle + 360) % 360; // Garantir une orientation entre 0 et 360 degrés
     }
     
+    public void setAngularSpeed(int speed) {
+    	moteurPilotage.setAngularSpeed(speed);
+    }
+    
     public boolean isMoving() {
         return moteurPilotage.isMoving();
     }
     
     public void avancerVers1erPalet() {
-		this.avancerDe(100); //vérifier longueur
+		this.avancerDe(62); //vérifier longueur
 	}
     /**
      * Récupère l'instance de MovePilot.
@@ -82,13 +86,20 @@ public class Deplacement {
     public void avancerDe(double distance) {
         moteurPilotage.travel(distance);
     }
+    
+    /*
+     * Le robot avance de la distance en faisant une action en même temps
+     */
+    public void avancerDe(double distance,boolean b) {
+        moteurPilotage.travel(distance,b);
+    }
 
     /**
      * Lance un déplacement en avant sans limite de distance (le robot avance jusqu'à l'arrêt).
      */
     public void avancerContinu(boolean b) {
     	//b = true -> Fait une action en même temps
-        moteurPilotage.travel(300, b);
+    	moteurPilotage.travel(300,b);
       
     }
     /**
@@ -119,8 +130,8 @@ public class Deplacement {
      * @param angleDeRotation Angle à tourner en degrés
      */
     public void pivoterGauche(double angleDeRotation) {
-        moteurPilotage.rotate(-angleDeRotation);
-        ajusterOrientation(-angleDeRotation);
+        moteurPilotage.rotate(angleDeRotation);
+        ajusterOrientation(angleDeRotation);
     }
 
     /**
@@ -129,10 +140,14 @@ public class Deplacement {
      * @param angleDeRotation Angle à tourner en degrés
      */
     public void pivoterDroite(double angleDeRotation) {
-        moteurPilotage.rotate(angleDeRotation);
-        ajusterOrientation(angleDeRotation);
+        moteurPilotage.rotate(-angleDeRotation);
+        ajusterOrientation(-angleDeRotation);
     }
 
+    
+    public void rotate(double angleDeRotation, boolean asynch) {
+    	moteurPilotage.rotate(angleDeRotation,asynch);
+    }
     /**
      * Ajuste l'orientation actuelle en fonction de l'angle de rotation donné.
      * @param angleDeRotation L'angle ajouté ou soustrait à l'orientation actuelle
