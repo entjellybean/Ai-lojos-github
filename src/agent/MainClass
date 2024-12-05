@@ -143,19 +143,19 @@ public class MainClass {
 		if (positionRobotEnFace == 0) {
 			//si le robot est à gauche
 			//-(90+61,846)=-151,846
-			mouvementRobot.pivoterGauche(151);
-			mouvementRobot.setOrientation(-151);
+			mouvementRobot.pivoterGauche(138);
+			mouvementRobot.setOrientation(-138);
 
 		} else if (positionRobotEnFace == 1) {
 			//si le robot est au milieu
 			//(90+61,846)=151,846
-			mouvementRobot.pivoterDroite(151);
-			mouvementRobot.setOrientation(151);
+			mouvementRobot.pivoterDroite(138);
+			mouvementRobot.setOrientation(138);
 		} else if (positionRobotEnFace == 2) {
 			//si le robot est à droite
 			//(90+61,846)=151,846
-			mouvementRobot.pivoterGauche(151);
-			mouvementRobot.setOrientation(-151);
+			mouvementRobot.pivoterGauche(138);
+			mouvementRobot.setOrientation(-138);
 		}
 		//aller vers le palet
 		mouvementRobot.avancerDe(48);
@@ -165,18 +165,18 @@ public class MainClass {
 		if (positionRobotEnFace == 0) {
 			//si le robot est à gauche
 			//-(90+61,846)=-151,846
-			mouvementRobot.pivoterDroite(151);
+			mouvementRobot.pivoterDroite(138);
 			mouvementRobot.setOrientation(0);
 
 		} else if (positionRobotEnFace == 1) {
 			//si le robot est au milieu
 			//(90+61,846)=151,846
-			mouvementRobot.pivoterGauche(151);
+			mouvementRobot.pivoterGauche(138);
 			mouvementRobot.setOrientation(0);
 		} else if (positionRobotEnFace == 2) {
 			//si le robot est à droite
 			//(90+61,846)=151,846
-			mouvementRobot.pivoterDroite(151);
+			mouvementRobot.pivoterDroite(138);
 			mouvementRobot.setOrientation(0);
 		}
 		mouvementRobot.avancerContinu(true);
