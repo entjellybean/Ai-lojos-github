@@ -129,8 +129,14 @@ public class MainClass {
 			System.out.println(res);
 		}
 		mouvementRobot.stop();
-		pince.lacherPalet();                    
-		Delay.msDelay(2000);
+		pince.lacherPalet();    
+		// Reculer après avoir déposé le palet
+	    mouvementRobot.reculerDe(20); // Recule de 20 cm (ajustez la distance si nécessaire)
+	    System.out.println("Recul après dépôt.");
+
+	    // Fermer la pince après le recul
+	    pince.recupererPalet();
+	    System.out.println("Pince fermée.");
 
 	}
 
