@@ -35,7 +35,7 @@ public class Deplacement {
         // Configure le diamètre et l'écartement des roues en centimètres
     	EV3LargeRegulatedMotor motorA = new EV3LargeRegulatedMotor(A);
     	EV3LargeRegulatedMotor motorC = new EV3LargeRegulatedMotor(C);
-    	Wheel roueGauche = WheeledChassis.modelWheel(motorA, 5.6).offset(-6.5);  // Configuration de la roue gauche
+    	Wheel roueGauche = WheeledChassis.modelWheel(motorA, 5.6).offset(-6.2);  // Configuration de la roue gauche
         Wheel roueDroite = WheeledChassis.modelWheel(motorC, 5.6).offset(6.075);   // Configuration de la roue droite
         Chassis baseRoues = new WheeledChassis(new Wheel[] {roueGauche, roueDroite}, WheeledChassis.TYPE_DIFFERENTIAL);
         moteurPilotage = new MovePilot(baseRoues);
