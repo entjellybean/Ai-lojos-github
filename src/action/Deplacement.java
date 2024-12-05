@@ -35,11 +35,11 @@ public class Deplacement {
         // Configure le diamètre et l'écartement des roues en centimètres
     	EV3LargeRegulatedMotor motorA = new EV3LargeRegulatedMotor(A);
     	EV3LargeRegulatedMotor motorC = new EV3LargeRegulatedMotor(C);
-    	Wheel roueGauche = WheeledChassis.modelWheel(motorA, 5.6).offset(-6.075);  // Configuration de la roue gauche
-        Wheel roueDroite = WheeledChassis.modelWheel(motorC, 5.6).offset(6.075);   // Configuration de la roue droite
+    	Wheel roueGauche = WheeledChassis.modelWheel(motorA, 5.6).offset(-6.1);  // Configuration de la roue gauche
+        Wheel roueDroite = WheeledChassis.modelWheel(motorC, 5.6).offset(6.05);   // Configuration de la roue droite
         Chassis baseRoues = new WheeledChassis(new Wheel[] {roueGauche, roueDroite}, WheeledChassis.TYPE_DIFFERENTIAL);
         moteurPilotage = new MovePilot(baseRoues);
-        moteurPilotage.setLinearSpeed(20); // Vitesse linéaire définie à 10 cm/s
+        moteurPilotage.setLinearSpeed(45); // Vitesse linéaire définie à 10 cm/s
         moteurPilotage.setAngularSpeed(50); // Vitesse de rotation modérée
         orientation = 0;
     }
