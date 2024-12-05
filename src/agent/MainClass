@@ -115,7 +115,7 @@ public class MainClass {
 	    System.out.println("Recul après dépôt.");
 
 	    // Fermer la pince après le recul
-	    pince.recupererPalet();
+	    pince.fermer(1500);
 	    System.out.println("Pince fermée.");
 
 	}
@@ -135,8 +135,8 @@ public class MainClass {
 	    System.out.println("Recul après dépôt.");
 
 	    // Fermer la pince après le recul
-	    pince.recupererPalet();
-	    System.out.println("Pince fermée.");
+               pince.fermer(1500);	    
+               System.out.println("Pince fermée.");
 
 	}
 
