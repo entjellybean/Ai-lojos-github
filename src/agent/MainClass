@@ -29,6 +29,7 @@ public class MainClass {
 		Port A = LocalEV3.get().getPort("A");
 		Port B = LocalEV3.get().getPort("B");
 		Port C = LocalEV3.get().getPort("C");
+		Port D = LocalEV3.get().getPort("D");
 		Port s1 = LocalEV3.get().getPort("S1");
 		//Port s2 = LocalEV3.get().getPort("S2");
 		Port s3 = LocalEV3.get().getPort("S3");
@@ -39,7 +40,7 @@ public class MainClass {
 		colorSensor = new ColorSensor(s4);
 		boutonConsole = new BoutonConsole();
 		moveScan = new MoveScan(mouvementRobot,s1); 
-		pince = new Pince(B,s3);
+		pince = new Pince(D,s3);
 
 	}
 
@@ -53,19 +54,19 @@ public class MainClass {
 		//positionRobotEnFace = boutonConsole.positionRobot();
 
 		//mouvementRobot.avancerDe(50);//à supprimer
-		//pince.ouvrir(1700);//à supprimer
-		//pince.fermer(100);//à supprimer
+		//pince.fermer(1800);//à supprimer
+		//pince.ouvrir(1500);//à supprimer
+
 		/*while (Button.ESCAPE.isUp()) {
 			if (!isFirstPalletPicked) {
 				mouvementRobot.avancerVers1erPalet();
 				if (pince.recupererPalet()) {
 					mouvementRobot.pivoterDroite(90);
 					mouvementRobot.avancerDe(26);
-					mouvementRobot.pivoterGauche(85);//companser angle robot
-					goToWhiteLineAndDrop();
+					mouvementRobot.pivoterGauche(90);//compenser angle robot
+					goToWhiteLineAndDrop1erPalet();
 					isFirstPalletPicked = true;
 				}
-				pince.lacherPalet();
 			} else if(!isSecondPalletPicked) {
 				goToSecondPalletAndPick();
 				isSecondPalletPicked = true;
@@ -73,8 +74,20 @@ public class MainClass {
 				searchAndCollectNextPallet();
 			}
 		}*/
+		//mouvementRobot.avancerDe(100,true);
+		//System.out.println(detectObstacle());
+		
+		//Delay.msDelay(2000);
+		//searchAndCollectNextPallet();
+		
+		//goToWhiteLineAndDrop();
 		moveScan.RechercheEtOrientation();
-		moveScan.moveForward();
+		Delay.msDelay(10000);
+		//System.out.println(moveScan.getDistance());
+		//System.out.println(detectObstacle());
+		//Delay.msDelay(2000);
+		//mouvementRobot.avancerDe(moveScan.getDistance());
+		//moveScan.moveForward();
 		//mouvementRobot.avancerContinu();
 		//goToWhiteLineAndDrop();
 		//System.out.println(detectObstacle());
@@ -84,26 +97,39 @@ public class MainClass {
 		cleanup();
 	}
 
-	private boolean takePallet() { 
-		// c'est la pince qu'il faut utiliser pour utiliser la méthode récupérer palet
-		//return pince.recupererPalet();
-		return false;
-	}
-
 	private void goToWhiteLineAndDrop() {
 		mouvementRobot.avancerContinu(true);
 		boolean res = false;
 		System.out.println("Is moving : "+mouvementRobot.isMoving());
 		while (mouvementRobot.isMoving() && !res) { //regarder quand ça s'arrête
-			//mouvementRobot.avancerContinu();
 			res= colorSensor.detecteLigneBlanche();
 			System.out.println(res);
-			/*if (detectObstacle()) { 
+			if (detectObstacle()) { 
 				eviterObstacle();
-			}*/
+			}
 		}
 		mouvementRobot.stop();
-		//pince.lacherPalet();                    
+		pince.lacherPalet();    
+		// Reculer après avoir déposé le palet
+	    mouvementRobot.reculerDe(20); // Recule de 20 cm (ajustez la distance si nécessaire)
+	    System.out.println("Recul après dépôt.");
+
+	    // Fermer la pince après le recul
+	    pince.recupererPalet();
+	    System.out.println("Pince fermée.");
+
+	}
+	
+	private void goToWhiteLineAndDrop1erPalet() {
+		mouvementRobot.avancerContinu(true);
+		boolean res = false;
+		System.out.println("Is moving : "+mouvementRobot.isMoving());
+		while (mouvementRobot.isMoving() && !res) { //regarder quand ça s'arrête
+			res= colorSensor.detecteLigneBlanche();
+			System.out.println(res);
+		}
+		mouvementRobot.stop();
+		pince.lacherPalet();                    
 		Delay.msDelay(2000);
 
 	}
@@ -171,8 +197,7 @@ public class MainClass {
 //Si on ne trouve pas de palet
 }*/ 
 		mouvementRobot.pivoterGauche(180);
-		mouvementRobot.avancerDe(120,true);
-		//if (detectObstacle())
+		mouvementRobot.avancerDe(120);
 		moveScan.RechercheEtOrientation();
 		pince.recupererPalet();
 		mouvementRobot.orienterVersLigneAdverse();
@@ -181,7 +206,7 @@ public class MainClass {
 
 
 	private boolean detectObstacle() { // tester la classe + changer la méthode pour avoir la distance en face
-		if (moveScan.getCurrentDistance()>=25){
+		if (moveScan.getDistance()>=25){
 			return false;
 		}
 		return true;
@@ -190,20 +215,39 @@ public class MainClass {
 
 	private void eviterObstacle() {
 		//à vérifier si on détecte le mur
-		boolean b = true;
-		int cpt=0;
-		//float distanceObstacle = moveScan.getDistance();
-		while(b){
-			mouvementRobot.pivoterDroite(10);
-			cpt+=10;
-			if (!detectObstacle()){
-				b = false;
+		double distanceCentre = moveScan.getDistance();
+		mouvementRobot.pivoterGauche(30);
+		double distanceGauche = moveScan.getDistance();
+		mouvementRobot.pivoterDroite(30);
+		double distanceDroite = moveScan.getDistance();
+		
+		double tolerance = 10;
+		
+		if(distanceCentre - tolerance <= distanceGauche
+				&& distanceGauche <= distanceCentre + tolerance &&
+				distanceCentre - tolerance <= distanceDroite
+				&& distanceDroite <= distanceCentre + tolerance) {
+			//Si c'est vrai, c'est un mur, on va l'éviter à 90 degrés
+			mouvementRobot.pivoterDroite(90);
+		} else {
+			//si c'est un robot
+			boolean b = true;
+			int cpt=30;
+			mouvementRobot.pivoterDroite(30);
+			while(b){
+				mouvementRobot.pivoterDroite(10);
+				cpt+=10;
+				if (detectObstacle()){
+					b = false;
+				}
 			}
+			int avancer = (int) Math.sqrt(Math.pow(distanceCentre,2)+225) + 20;
+			mouvementRobot.avancerDe(avancer);
+			mouvementRobot.pivoterGauche(cpt);
+			//mouvementRobot.avancerDe(avancer);
 		}
-		//int avancer = (int) Math.sqrt(Math.pow(distanceObstacle,2)+225);
-		//mouvementRobot.avancerDe(avancer);
-		mouvementRobot.pivoterGauche(cpt);
-		//mouvementRobot.avancerDe(avancer);
+		
+		
 
 
 	}
