@@ -20,9 +20,10 @@ import lejos.hardware.port.TachoMotorPort;
 
 public class Pince {
 
-	private EV3TouchSensor bouton;  // Capteur connecté au port S3
-	//private EV3LargeRegulatedMotor motorPince;// Moteur connecté au port B
-
+	private EV3TouchSensor bouton;
+	//le bouton était initialement prévu pour permettre de savoir si il y avait un palet
+	//mais comme il était pas assez sensible, nous ne l'avons pas utilisé dans nos classes au final
+	
 	EV3MediumRegulatedMotor motorPince;
 	
 	// Constructeur pour initialiser le moteur de la pince
@@ -36,40 +37,32 @@ public class Pince {
 	public void ouvrir(int a) {
 		// Ouvre la pince
 		motorPince.rotate(a);
-		
-		//2000 pour ouvrir complètement
 	}
 
 	public void fermer(int a) {
 		// Fermer la pince
-		motorPince.rotate(-a); 
-		
-		//2000 pour fermer complètement
+		motorPince.rotate(-a);
 	}
 
-	public void stop() {//Je sais pas comment le tester
-		// Arrête le moteur de la pince
+	public void stop() {
+		// Ferme le moteur de la pince
 		motorPince.stop();
 	}
 
 	public boolean recupererPalet() {
-		// Détecter le palet et ferme les pinces
-		// Renvoit vrai si le palet est récupéré
-		/*if (verificationPalet()== 100) {
-			fermer(1800);
-			return true;
-		}
-		return false;*/
-		fermer(1500); //avant 1800
+		// Ferme les pinces et renvoit vrai si le palet est récupéré
+		fermer(1500);
 		return true;
 	}
 
+
 	public void lacherPalet() {
 		// Ouvre les pinces
-		ouvrir(1500); //avant 1800
+		ouvrir(1500);
 	}
 	
 	public void close() {
+		//ferme le moteur de la pince
 		this.motorPince.close();
 	}
 
