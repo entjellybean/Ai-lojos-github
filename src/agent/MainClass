@@ -204,7 +204,11 @@ public class MainClass {
 	private void searchAndCollectNextPallet() {
 		//Départ de la méthode au milieu de la table, effectue une recherche
 		//Si la recherche est concluante (la 1ere ou 2ème discontinuité est un palet,
-		//on va le récupérer et 
+		//on va le récupérer, le déposé derrière la ligne blanche et retourné au milieu)
+		//Sinon, au sein de la classe RechercheEtOrientation, on va lui demander de tourner
+		//de 90° et d'avancer de 50 cm, le while du start permettre de relancer une nouvelle
+		//recherche
+		
 
 		if(moveScan.RechercheEtOrientation()) {
 			System.out.println("Il y a un palet");
@@ -217,24 +221,22 @@ public class MainClass {
 			mouvementRobot.pivoterGauche(163);
 			mouvementRobot.avancerDe(100);
 		}
-		//moveScan.moveForward();
-
-
-		//pince.fermer(500);
-
 	}
 
 
-	private boolean detectObstacle() { // tester la classe + changer la méthode pour avoir la distance en face
+	private boolean detectObstacle() {
+		//Si le capteur détect quelque chose en dessous de 25 cm, ça ne peut pas être un palet
+		//Il faut donc l'éviter
 		if (moveScan.getDistance()>=25){
 			return false;
 		}
 		return true;
-		//return false;
 	}
 
 	private void eviterObstacle() {
-		//à vérifier si on détecte le mur
+		//Si on a détecté un obstacle, on pourra utiliser cette classe pour l'éviter
+		// on va traiter les deux cas où c'est un mur ou un robot
+		
 		double distanceCentre = moveScan.getDistance();
 		mouvementRobot.pivoterGauche(30);
 		double distanceGauche = moveScan.getDistance();
@@ -250,7 +252,8 @@ public class MainClass {
 			//Si c'est vrai, c'est un mur, on va l'éviter à 90 degrés
 			mouvementRobot.pivoterDroite(90);
 		} else {
-			//si c'est un robot
+			//si c'est un robot, on va l'éviter en avançant après avoir pris de l'angle, puis
+			//en retournant à notre orientation de base
 			boolean b = true;
 			int cpt=30;
 			mouvementRobot.pivoterDroite(30);
@@ -262,20 +265,17 @@ public class MainClass {
 				}
 			}
 			int avancer = (int) Math.sqrt(Math.pow(distanceCentre,2)+225) + 20;
+			//calcul l'hypothénuse pour avoir la distance à parcourir pour éviter l'obstacle
 			mouvementRobot.avancerDe(avancer);
 			mouvementRobot.pivoterGauche(cpt);
-			//mouvementRobot.avancerDe(avancer);
 		}
-
-
-
 
 	}
 
 	private void cleanup() {
 		mouvementRobot.stop();
 		moveScan.close();
-		colorSensor.close(); //créer la méthode close() pour colorSensor
-		//pince.close();
+		colorSensor.close();
+		pince.close();
 	}
 }
