@@ -6,15 +6,6 @@ import lejos.utility.Delay;
 
 public class BoutonConsole {
 
-	/*public static void main(String[] args) {
-		BoutonConsole bouton = new BoutonConsole();
-		
-		int a = bouton.positionRobot();
-		
-		System.out.print(a);
-		Delay.msDelay(2000);
-	}*/
-
 	public int positionRobot() {
 
 		//renvoie un integer en fonction de la position
@@ -42,3 +33,4 @@ public class BoutonConsole {
 		return 4;
 	}
 }
+
