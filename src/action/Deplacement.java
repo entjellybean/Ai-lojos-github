@@ -1,201 +1,118 @@
 package action;
 
+import lejos.hardware.ev3.LocalEV3;
+import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.Motor;
+import lejos.hardware.motor.NXTRegulatedMotor;
+import lejos.hardware.port.MotorPort;
+import lejos.hardware.port.Port;
+import lejos.robotics.RegulatedMotor;
 import lejos.robotics.chassis.Chassis;
 import lejos.robotics.chassis.Wheel;
 import lejos.robotics.chassis.WheeledChassis;
 import lejos.robotics.navigation.MovePilot;
 
-/**
- * La classe Deplacement permet de contrôler les déplacements de base du robot.
- */
 public class Deplacement {
 
-    /**
-     * Le MovePilot gère les mouvements du robot.
-     */
+    
     private MovePilot moteurPilotage;
     
-    /**
-     * Orientation actuelle du robot, en degrés. 0 représente le nord, aligné avec l’adversaire.
-     */
-    private double orientation = 0;
+    private double orientation; 
+    //permet de connaître l'orientation du robot par rapport à sa position de base
 
-    /**
-     * Constructeur pour initialiser le système de déplacement.
-     * Configure les roues et initialise le MovePilot.
-     */
-    public Deplacement() {
+    
+    public Deplacement(Port A,Port C) {
         // Configure le diamètre et l'écartement des roues en centimètres
-        Wheel roueGauche = WheeledChassis.modelWheel(Motor.A, 5.6).offset(-6.0);  // Configuration de la roue gauche
-        Wheel roueDroite = WheeledChassis.modelWheel(Motor.C, 5.6).offset(6.0);   // Configuration de la roue droite
+    	EV3LargeRegulatedMotor motorA = new EV3LargeRegulatedMotor(A);
+    	EV3LargeRegulatedMotor motorC = new EV3LargeRegulatedMotor(C);
+    	Wheel roueDroite = WheeledChassis.modelWheel(motorA, 5.6).offset(-6.850); // Configuration de la roue gauche
+        Wheel roueGauche = WheeledChassis.modelWheel(motorC, 5.6).offset(6.850);   // Configuration de la roue droite
         Chassis baseRoues = new WheeledChassis(new Wheel[] {roueGauche, roueDroite}, WheeledChassis.TYPE_DIFFERENTIAL);
         moteurPilotage = new MovePilot(baseRoues);
-        moteurPilotage.setAngularSpeed(50); // Vitesse de rotation modérée
+        moteurPilotage.setLinearSpeed(27); // Vitesse linéaire définie à 10 cm/s
+        moteurPilotage.setAngularSpeed(30); // Vitesse de rotation modérée
+        orientation = 0;
     }
 
-    /**
-     * Met à jour l'orientation actuelle du robot.
-     * @param nouvelAngle Angle en degrés
-     */
     public void setOrientation(double nouvelAngle) {
-        this.orientation = nouvelAngle;
+    	// Met à jour l'orientation du robot
+    	// Garantie une orientation entre 0 et 360 degrés
+        orientation = (nouvelAngle + 360) % 360; 
     }
-    public void avancerVers1erPalet() {
-		this.avancerDe(100); //vérifier longueur
-	}
-    /**
-     * Récupère l'instance de MovePilot.
-     * @return moteurPilotage
-     */
-    public MovePilot obtenirPilot() {
-        return moteurPilotage;
-    } 
-
-    /**
-     * Renvoie l'orientation actuelle du robot.
-     * @return orientation
-     */
+    
+    public void setAngularSpeed(int speed) {
+    	//Ajuste la vitesse de rotation du robot
+    	moteurPilotage.setAngularSpeed(speed);
+    }
+    
+    public boolean isMoving() {
+    	//renvoie vrai si le robot est en action
+        return moteurPilotage.isMoving();
+    }
+    
     public double obtenirOrientation() {
+    	//renvoie l'orientation actuelle du robot
         return orientation;
     }
 
-    /**
-     * Fait avancer le robot sur une distance spécifique en centimètres.
-     * @param distance Centimètres à parcourir
-     */
     public void avancerDe(double distance) {
+    	//Le robot avance de la distance
         moteurPilotage.travel(distance);
     }
-
-    /**
-     * Lance un déplacement en avant sans limite de distance (le robot avance jusqu'à l'arrêt).
-     */
-    public void avancerContinu() {
-        moteurPilotage.forward();
+    
+    public void avancerDe(double distance,boolean b) {
+    	//Le robot avance de la distance et fait une action en même temps
+        moteurPilotage.travel(distance,b);
     }
 
-    /**
-     * Recule le robot d'une distance spécifiée en centimètres.
-     * @param distance Centimètres à parcourir en arrière
-     */
+    public void avancerContinu(boolean b) {
+    	//Avance en sur 3 mètres, c'est à dire en continu car nous n'avons pas plus
+    	//de longueur disponible sur le plateau. Si b = True, alors le robot peut
+    	//faire une action en simultané
+    	moteurPilotage.travel(300,b);
+      
+    }
+    
     public void reculerDe(double distance) {
+    	//Recule de la distance
         moteurPilotage.travel(-distance);
     }
 
-    /**
-     * Recule sans limite de distance (le robot recule jusqu'à l'arrêt).
-     */
-    public void reculerContinu() {
-        moteurPilotage.backward();
-    }
-
-    /**
-     * Stoppe le robot instantanément.
-     */
-    public void arretImmediat() {
+    public void stop() {
+    	//Ferme les moteurs
         moteurPilotage.stop();
     }
 
-    /**
-     * Effectue une rotation vers la gauche d'un certain angle.
-     * Ajuste l'orientation du robot en conséquence.
-     * @param angleDeRotation Angle à tourner en degrés
-     */
     public void pivoterGauche(double angleDeRotation) {
-        moteurPilotage.rotate(-angleDeRotation);
-        ajusterOrientation(-angleDeRotation);
-    }
-
-    /**
-     * Effectue une rotation vers la droite d'un certain angle.
-     * Ajuste l'orientation du robot en conséquence.
-     * @param angleDeRotation Angle à tourner en degrés
-     */
-    public void pivoterDroite(double angleDeRotation) {
+    	//Tourne à gauche de l'angleDeRotation
         moteurPilotage.rotate(angleDeRotation);
-        ajusterOrientation(angleDeRotation);
+        setOrientation(angleDeRotation);
     }
 
-    /**
-     * Ajuste l'orientation actuelle en fonction de l'angle de rotation donné.
-     * @param angleDeRotation L'angle ajouté ou soustrait à l'orientation actuelle
-     */
-    private void ajusterOrientation(double angleDeRotation) {
-        orientation += angleDeRotation;
-        if (orientation >= 360) {
-            orientation -= 360;
-        } else if (orientation < 0) {
-            orientation += 360;
-        }
+    public void pivoterDroite(double angleDeRotation) {
+    	//Tourne à droite de l'angleDeRotation
+        moteurPilotage.rotate(-angleDeRotation);
+        setOrientation(-angleDeRotation);
     }
 
-    /**
-     * Oriente le robot vers sa position de départ, dirigée vers l’en-but adverse.
-     */
-    public void retourInitial() {
-        if (orientation < 180) {
-            pivoterGauche(orientation);
+    public void rotate(double angleDeRotation, boolean asynch) {
+    	//Tourne et fait une autre action en même temps
+    	moteurPilotage.rotate(angleDeRotation,asynch);
+    }
+    
+    public void allerVersOrientation(double angleCible) {
+    	//S'oriente vers un certain point (permet de choisir quel méthode pivoter utiliser
+        double angleDiff = (angleCible - orientation + 360) % 360;
+        if (angleDiff > 180) {
+            pivoterGauche(360 - angleDiff);
         } else {
-            pivoterDroite(360 - orientation);
-        }
-    }
-
-    /**
-     * Oriente le robot vers une position spécifique en degrés.
-     * @param angleCible Angle souhaité
-     */
-    public void allerVersOrientation(double angleCible) { //contre le sesn des aiguilles 
-        double angleDiff = angleCible - orientation;
-        if (angleDiff > 0) {
             pivoterDroite(angleDiff);
-        } else {
-            pivoterGauche(-angleDiff);
         }
     }
 
     public void orienterVersLigneAdverse() {
-        // L'angle 0 représente la ligne adverse
+    	//Permet de s'orienter vers la position d'origine (donc 0), et donc d'être
+    	//bien axé par rapport à la ligne blanche
         allerVersOrientation(0);
-        System.out.println("Le robot est maintenant orienté vers la ligne adverse.");
-    }
-   
-    public static void main(String[] args) {
-        // Crée une instance de la classe Deplacement pour contrôler le robot
-        Deplacement robot = new Deplacement();
-
-        // Avancer de 20 cm
-        System.out.println("Avancer de 20 cm");
-        robot.avancerDe(20);
-
-     // Tester l'orientation du robot vers la ligne adverse
-        System.out.println("Orientation initiale : " + robot.obtenirOrientation());
-        robot.orienterVersLigneAdverse();
-        System.out.println("Orientation après ajustement : " + robot.obtenirOrientation());
-    
-
-
-        // Reculer de 20 cm
-        System.out.println("Reculer de 20 cm");
-        robot.reculerDe(20);
-
-       
-
-        // Pivoter à gauche de 90 degrés
-        System.out.println("Pivoter à gauche de 90 degrés");
-        robot.pivoterGauche(90);
-
-        
-        // Pivoter à droite de 90 degrés
-        System.out.println("Pivoter à droite de 90 degrés");
-        robot.pivoterDroite(90);
-
-      
-
-        // Avancer en continu (le robot avancera jusqu'à ce qu'il soit arrêté)
-        System.out.println("Avancer en continu");
-        robot.avancerContinu();
-
-        
     }
 }
