@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import action.Deplacement;
@@ -35,52 +36,7 @@ public class MoveScan {
 
 	private float lastDistance;
 
-	public static void main(String[] args) {
-		//MoveScan robot = new MoveScan();
-		//int rezultat=robot.forward(70);
-		//System.out.println(rezultat);
-
-		/*List<Double> distance = robot.rotateMeasure();
-
-        //List<double[]> x_index=robot.findAllDiscontinuities(distance,40);
-
-        int[] inde=robot.detectPallet(distance, 40);
-        System.out.println("first index : "+inde[0]);
-        System.out.println("second index : "+inde[1]);
-        List<double[]> res=robot.findAllDiscontinuities(distance, 40);
-        double [] resFinal =robot.findSmallestDiscontinuity(res);
-
-        for (double[] arr : res) {
-            System.out.println(Arrays.toString(arr));
-        }
-        System.out.println(Arrays.toString(resFinal));
-        double angle=robot.calc_angle(resFinal, distance.size());
-        //System.out.println(angle+10);
-        //robot.deplacement.rotate(angle, false);
-        //double current_dist=robot.getDistance();
-        //System.out.println(current_dist);
-
-        String what=robot.analyzeDiscontinuity(resFinal,distance,5,15);
-        System.out.println(what);
-        double gjatesi=robot.calculateObjectLength(distance, resFinal[0],resFinal[1]);
-        System.out.println(gjatesi);
-
-
-       /* int j = 0;
-       for (Double d : distance) {
-System.out.println(j + ":" + d);
-j++;
-
-   }*/
-
-		//robot.RechercheEtOrientation();
-		//robot.moveForward();
-
-
-
-
-	}
-
+	
 	public MoveScan(Deplacement mouvementRobot) {
 
 
@@ -149,33 +105,66 @@ j++;
 
 	}
 
-	public void  RechercheEtOrientation() {
+	public static boolean arraysEqual(double[] arr1, double[] arr2) {
+		return Arrays.equals(arr1, arr2);
+	}
+
+	public boolean  RechercheEtOrientation() {
 		List<Double> distance = rotateMeasure();
 
-		List<double[]> res=findAllDiscontinuities(distance, 40);
+		List<double[]> res=findAllDiscontinuities(distance, 2);
 		double [] resFinal =findSmallestDiscontinuity(res);
 
-		for (double[] arr : res) {
-			System.out.println(Arrays.toString(arr));
+		for(int i=0;i<res.size();i++){
+			if(arraysEqual(res.get(i),resFinal)) // (cette fonction tu dois //ajouter dans movescan ,et ici du coup on va appeler avec //movescan.arraysEqual )
+			{
+				res.remove(i);
+				break;
+			}
 		}
-		System.out.println(Arrays.toString(resFinal));
-		double angle=calc_angle(resFinal, distance.size());
 
-		double targetDistance = resFinal[2];
-		if (this.isPalet(resFinal, distance, 3.0, 25)) {
+		double [] res_final2 = findSmallestDiscontinuity(res);
+
+
+		boolean b1 = isPalet(resFinal, distance,3, 5);
+		System.out.println("1er palet : "+b1);
+		System.out.println("ResFinal1"+resFinal);
+		boolean b2 = isPalet(res_final2, distance,3, 5);
+		System.out.println("2eme palet : "+b2);
+		System.out.println("ResFinal2"+res_final2);
+		if(b1) {
+			//si 1er indice est un palet
+			for (double[] arr : res) {
+				System.out.println(Arrays.toString(arr));
+			}
+			System.out.println(Arrays.toString(resFinal));
+			double angle=calc_angle(resFinal, distance.size());
+			System.out.println(angle);
+
+			//deplacement.pivoterDroite(angle); //supprimer
+			//System.out.println("Is pallet : "+this.isPalet(resFinal, distance, 3.0, 5));
+
+			double targetDistance = resFinal[2];
+
+			/*boolean b =true;
+			while (isPalet(resFinal, distance, 3.0, 5)) {
+
+			}*/
+
+			//int indice = findPalletPlusProche(res,distance);
 
 			double tolerance = 5; // 3 cm tolerance
 
 			System.out.println("Bonne valeur (avant modif) : " +angle);
-			if(targetDistance>=30 && targetDistance < 60) {
-				angle+=10;
+			/*if(targetDistance>=30 && targetDistance < 60) {
+				angle+=15;
 
 			} else if(targetDistance>=60 && targetDistance < 80) {
 				angle+=10;
 			}
 			else {
-				angle+=15;
-			}
+				angle+=5;
+			}*/
 
 			if(angle>180) {
 				//deplacement.rotate(360-angle, false);
@@ -188,57 +177,70 @@ j++;
 			}
 
 			System.out.println("Bonne valeur (après modif) : " +angle);
+			deplacement.avancerDe(targetDistance-15);
+			return true;
 
+		} else if(b2) {
+			//deuxième est un palet
 
-
-			// Get the initial distance from the ultrasonic sensor
-			//double currentDistance = getDistance();
-			//System.out.println("Current distance: " + currentDistance);
-
-
-
-			// First while loop
-
-			boolean found=true;
-			double a1 = this.getDistance();
-			System.out.println("Distance Actuelle : " +a1);
-			if (Double.isInfinite(a1) || (a1 - tolerance < a1
-					&& a1 < a1 + tolerance)) {
-				found=false;
+			for (double[] arr : res) {
+				System.out.println(Arrays.toString(arr));
 			}
-			System.out.println("Found : " +found);
+			System.out.println(Arrays.toString(resFinal));
+			double angle=calc_angle(resFinal, distance.size());
+			System.out.println(angle);
 
+			//deplacement.pivoterDroite(angle); //supprimer
+			//System.out.println("Is pallet : "+this.isPalet(resFinal, distance, 3.0, 5));
 
-			while(!found) {
-				double currentDistance = getDistance();
-				double rez=currentDistance - tolerance;
-				//double rez2=currentDistance;
-				System.out.println("differenca "+rez);
-				System.out.println("Je suis dans le while");
-				//System.out.println("Distance actuale: "+rez2);
-				found= currentDistance - tolerance <= currentDistance
-						&& currentDistance <= currentDistance + tolerance;
-				if(angle>180) {
-					deplacement.pivoterDroite(10);
-				}
-				else {
-					deplacement.pivoterGauche(10);
-				}
+			double targetDistance = resFinal[2];
 
+			/*boolean b =true;
+			while (isPalet(resFinal, distance, 3.0, 5)) {
+
+			}*/
+
+			//int indice = findPalletPlusProche(res,distance);
+
+			double tolerance = 5; // 3 cm tolerance
+
+			System.out.println("Bonne valeur (avant modif) : " +angle);
+			/*if(targetDistance>=30 && targetDistance < 60) {
+				angle+=10;
+
+			} else if(targetDistance>=60 && targetDistance < 80) {
+				angle+=10;
 			}
-			System.out.println(found);
+			else {
+				angle+=15;
+			}*/
 
+			if(angle>180) {
+				//deplacement.rotate(360-angle, false);
+				deplacement.pivoterDroite(360-angle);
+				System.out.println("L'orientation finale : "+angle);
+			}
+			else {
+				//deplacement.rotate(angle+15, false);
+				deplacement.pivoterGauche(angle);
+			}
+
+			System.out.println("Bonne valeur (après modif) : " +angle);
+			deplacement.avancerDe(targetDistance-15);
+			return true;
 
 		} else {
-			//éviter
-			deplacement.pivoterDroite(angle+180);
-			deplacement.avancerDe(50);
-			//relancer une recherche
+			// pas de palet sur les 2 premières discontinuités
+			deplacement.pivoterDroite(90);
+			deplacement.avancerDe(30);
+
+			return false;
 		}
 		// Stop the robot once aligned
-		deplacement.stop();
 
 	}
+
+
 
 	public void moveForward() {
 		double distance=getDistance();
@@ -264,7 +266,7 @@ j++;
 	public List<Double> rotateMeasure() {
 		List<Double> distance = new ArrayList<Double>();
 		deplacement.setAngularSpeed(100);
-		deplacement.rotate(370, true);
+		deplacement.rotate(330, true);
 		while(deplacement.isMoving()) {
 			double d=this.getDistance();
 			if(Double.isInfinite(d)) {
@@ -320,7 +322,8 @@ j++;
 
 		for (int i = 0; i < distances.size() - 1; i++) {
 			double difference = distances.get(i + 1) - distances.get(i);
-
+			System.out.println("La différence : "+difference);
+			System.out.println("indice : "+i);
 			// Detect the first negative change above the threshold
 			if (firstIndex == -1 && difference < 0 && Math.abs(difference) > threshold) {
 				firstIndex = i + 1;
@@ -333,6 +336,7 @@ j++;
 				firstIndex = -1;  // Reset to look for the next pallet
 			}
 		}
+		//Collections.sort(discontinuities, new DistanceComparator());
 
 		return discontinuities;
 	}
@@ -363,7 +367,7 @@ j++;
 		double angle_min=0;
 		double angle_max=0;
 		if (max != -1 && min!= -1) {
-			double x =  370.0 / size;  
+			double x =  330.0 / size;  
 			angle_min = min * x;
 			angle_max = max * x;
 		}
@@ -379,7 +383,7 @@ j++;
 		double averageDistance = (distances.get(firstIndex) + distances.get(secondIndex)) / 2;
 
 		// Calculate the angle in radians based on the indices and total rotation
-		double angleInDegrees = Math.abs(secondIndex - firstIndex) * (370.0 / distances.size());
+		double angleInDegrees = Math.abs(secondIndex - firstIndex) * (350.0 / distances.size());
 		double angleInRadians = Math.toRadians(angleInDegrees);
 
 		// Calculate the arc length as the object's length
@@ -408,18 +412,29 @@ j++;
 
 		int firstIndex = (int) smallestDiscontinuity[0];
 		int secondIndex = (int) smallestDiscontinuity[1];
-		boolean stabilityCheck=isStableBetween(distances, firstIndex, secondIndex, stabilityThreshold);
-		System.out.println("checking the stability "+ stabilityCheck);
+		//boolean stabilityCheck=isStableBetween(distances, firstIndex, secondIndex, stabilityThreshold);
+		//System.out.println("checking the stability "+ stabilityCheck);
+
+		if(secondIndex-firstIndex >= 1 && secondIndex-firstIndex <= 5) {
+			//tester avant exam
+			System.out.println("Indice firstIndice : "+firstIndex);
+			return true;
+		}
+
+		return false;
 
 
+
+		/*
 		if (stabilityCheck) {
 
 			double estimatedDistance = calculateObjectLength(distances, firstIndex, secondIndex);
+			System.out.println(estimatedDistance);
 			if (estimatedDistance <= lengthThreshold ) {
 				return true;
 			}
 		}
-		return false;
+		return false;*/
 
 	}
 	public String analyzeDiscontinuity(double[] smallestDiscontinuity, List<Double> distances, double stabilityThreshold, double lengthThreshold) {
@@ -480,6 +495,8 @@ j++;
 	}
 
 
+
+
 	public void close() {
 		ultrasonicSensor.close();
 	}
@@ -487,4 +504,3 @@ j++;
 
 
 }
-
