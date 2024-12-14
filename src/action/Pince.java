@@ -55,57 +55,22 @@ public class Pince {
 	public boolean recupererPalet() {
 		// Détecter le palet et ferme les pinces
 		// Renvoit vrai si le palet est récupéré
-		if (verificationPalet()== 100) {
+		/*if (verificationPalet()== 100) {
 			fermer(1800);
 			return true;
 		}
-		return false;
+		return false;*/
+		fermer(1500); //avant 1800
+		return true;
 	}
 
 	public void lacherPalet() {
 		// Ouvre les pinces
-		ouvrir(1800);
+		ouvrir(1500); //avant 1800
 	}
 	
-/*	public void lacherApresLigneBlanche() {
-		// Lache le palet une fois que la ligne détectée
-		// Renvoie true s'il est lâché
-		ColorSensorTest c = new ColorSensorTest(this);
-	}*/
-
-	public float verificationPalet() {
-		//
-		float a= retour();
-		return a;
-		//Va retourner 100 si c'est touché
-		//Et 0 sinon rien n'est détecté
-	}
-	
-	private float retour() {
-		SampleProvider a = bouton.getTouchMode();
-		float[] sample = new float[a.sampleSize()];
-		a.fetchSample(sample,0);
-		return (float) sample[0] *100;
-	}
 	public void close() {
 		this.motorPince.close();
 	}
-	
-/*	public static void main(String[] args) {
-		// Initialise l'application
-		Pince app = new Pince();
-		
-		// Test		
-		//app.recupererPalet();
-		
-		app.ouvrir(100);
-		app.fermer(100);
-		//System.out.print(app.lacherApresLigneBlanche());
-		
-
-		//app.lacherPalet();
-		// Ferme le moteur après utilisation
-		app.motorPince.close();
-	}*/
 
 }
