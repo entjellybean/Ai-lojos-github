@@ -9,6 +9,10 @@ import lejos.hardware.motor.NXTRegulatedMotor;
 import lejos.hardware.port.Port;
 import lejos.hardware.port.SensorPort;
 import lejos.utility.Delay;
+
+import java.util.Arrays;
+import java.util.List;
+
 import action.Deplacement;
 import action.Pince;
 import perception.BoutonConsole;
@@ -50,164 +54,174 @@ public class MainClass {
 	}
 
 	public void start() {
-		//System.out.println("wait...");
-		//positionRobotEnFace = boutonConsole.positionRobot();
+		pince.fermer(1000);
+		System.out.println("wait...");
+		positionRobotEnFace = boutonConsole.positionRobot();
 
-		//mouvementRobot.avancerDe(50);//à supprimer
-		//pince.fermer(1800);//à supprimer
-		//pince.ouvrir(1500);//à supprimer
+		while (Button.ESCAPE.isUp()) {
 
-		/*while (Button.ESCAPE.isUp()) {
 			if (!isFirstPalletPicked) {
-				mouvementRobot.avancerVers1erPalet();
-				if (pince.recupererPalet()) {
-					mouvementRobot.pivoterDroite(90);
-					mouvementRobot.avancerDe(26);
-					mouvementRobot.pivoterGauche(90);//compenser angle robot
-					goToWhiteLineAndDrop1erPalet();
-					isFirstPalletPicked = true;
-				}
+				//Programme spécifique pour récupérer le premier palet avec les distances
+				mouvementRobot.avancerDe(45);
+				pince.lacherPalet();
+				mouvementRobot.avancerDe(10);
+				pince.recupererPalet();
+				mouvementRobot.pivoterDroite(60);
+				mouvementRobot.avancerDe(35);
+				mouvementRobot.pivoterGauche(60);
+				goToWhiteLineAndDrop1erPalet();
+				isFirstPalletPicked = true;
+
 			} else if(!isSecondPalletPicked) {
+				//Programme spécifique pour récupérer le deuxième palet avec les distances et angle
 				goToSecondPalletAndPick();
 				isSecondPalletPicked = true;
+				mouvementRobot.pivoterGauche(163);
+				mouvementRobot.avancerDe(100);
 			} else{
+				//effectue une recherche pour identifier le prochain palet, le récupérer et le déposer derrière la ligne blanche
 				searchAndCollectNextPallet();
 			}
-		}*/
-		//mouvementRobot.avancerDe(100,true);
-		//System.out.println(detectObstacle());
-		
-		//Delay.msDelay(2000);
-		//searchAndCollectNextPallet();
-		
-		//goToWhiteLineAndDrop();
-		moveScan.RechercheEtOrientation();
-		Delay.msDelay(10000);
-		//System.out.println(moveScan.getDistance());
-		//System.out.println(detectObstacle());
-		//Delay.msDelay(2000);
-		//mouvementRobot.avancerDe(moveScan.getDistance());
-		//moveScan.moveForward();
-		//mouvementRobot.avancerContinu();
-		//goToWhiteLineAndDrop();
-		//System.out.println(detectObstacle());
-		//System.out.println(colorSensor.detecteLigneBlanche());
+		}
+
+
 		System.out.println("stop.");
-		//Delay.msDelay(2000);
 		cleanup();
 	}
 
-	private void goToWhiteLineAndDrop() {
+
+	private void goToWhiteLineAndDrop1erPalet() {
+		//une fois le palet récupéré, 
+		//cette méthode permet d'aller le déposer à la ligne blanche ne contient
+		//pas de méthode pour éviter l'autre robot car la stratégie n'en a pas besoin
+		//pour les deux premiers palets.
+
+		//avance jusqu'à la ligne blanche
+		mouvementRobot.avancerContinu(true);
+		boolean res = false;
+		System.out.println("Is moving : "+mouvementRobot.isMoving());
+		while (mouvementRobot.isMoving() && !res) {
+			res= colorSensor.detecteLigneBlanche();
+			System.out.println(res);
+		}
+		mouvementRobot.stop();
+		pince.lacherPalet();    
+
+		// Recule après avoir déposé le palet
+		mouvementRobot.reculerDe(10); // Recule de 20 cm (ajustez la distance si nécessaire)
+		System.out.println("Recul après dépôt.");
+
+		// Ferme la pince
+		pince.recupererPalet();	    
+		System.out.println("Pince fermée.");
+
+	}
+
+	private void goToWhiteLineAndDrop() { 
+		//une fois le palet récupéré, 
+		//cette méthode permet d'aller le déposer à la ligne blanche contient une
+		// méthode pour éviter l'autre robot car on est utilise cette méthode pour la
+		// partie non déterministe
+
 		mouvementRobot.avancerContinu(true);
 		boolean res = false;
 		System.out.println("Is moving : "+mouvementRobot.isMoving());
 		while (mouvementRobot.isMoving() && !res) { //regarder quand ça s'arrête
 			res= colorSensor.detecteLigneBlanche();
 			System.out.println(res);
-			if (detectObstacle()) { 
+			if (detectObstacle()) { //la différence c'est qu'on traite s'il y a un obstacle
 				eviterObstacle();
 			}
 		}
 		mouvementRobot.stop();
 		pince.lacherPalet();    
 		// Reculer après avoir déposé le palet
-	    mouvementRobot.reculerDe(20); // Recule de 20 cm (ajustez la distance si nécessaire)
-	    System.out.println("Recul après dépôt.");
+		mouvementRobot.reculerDe(10); // Recule de 20 cm (ajustez la distance si nécessaire)
+		System.out.println("Recul après dépôt.");
 
-	    // Fermer la pince après le recul
-	    pince.fermer(1500);
-	    System.out.println("Pince fermée.");
-
-	}
-	
-	private void goToWhiteLineAndDrop1erPalet() {
-		mouvementRobot.avancerContinu(true);
-		boolean res = false;
-		System.out.println("Is moving : "+mouvementRobot.isMoving());
-		while (mouvementRobot.isMoving() && !res) { //regarder quand ça s'arrête
-			res= colorSensor.detecteLigneBlanche();
-			System.out.println(res);
-		}
-		mouvementRobot.stop();
-		pince.lacherPalet();    
-		// Reculer après avoir déposé le palet
-	    mouvementRobot.reculerDe(20); // Recule de 20 cm (ajustez la distance si nécessaire)
-	    System.out.println("Recul après dépôt.");
-
-	    // Fermer la pince après le recul
-               pince.fermer(1500);	    
-               System.out.println("Pince fermée.");
+		// Fermer la pince après le recul
+		pince.fermer(1000);
+		System.out.println("Pince fermée.");
 
 	}
-
-
 
 	private void goToSecondPalletAndPick() {
-
-		//on suppose qu'on est au milieu du rectangle
-		//s'orienter vers le palet qui n'a pas bougé en fonction de "position"
+		// La méthode a pour objectif de récupérer le 2ème palet et de le récupérer
+		
+		//Comme notre robot avait tendance à se déplacer sur la gauche, 
+		//les angles ne sont pas symétriques pour compenser
+		
+		// positionRobotEnFace est récupéré lors du démarage du robot en appuyant sur le
+		// bouton correspondant par l'utilisateur en fonction de la position du robot en face
+		
+		//s'oriente, va vers le robot et récupère le palet
 		if (positionRobotEnFace == 0) {
 			//si le robot est à gauche
-			//-(90+61,846)=-151,846
-			mouvementRobot.pivoterGauche(138);
-			mouvementRobot.setOrientation(-138);
+			mouvementRobot.pivoterGauche(150);
+			mouvementRobot.avancerDe(25);
+			pince.lacherPalet();
+			mouvementRobot.avancerDe(23);
+			pince.recupererPalet();
 
 		} else if (positionRobotEnFace == 1) {
 			//si le robot est au milieu
-			//(90+61,846)=151,846
-			mouvementRobot.pivoterDroite(138);
-			mouvementRobot.setOrientation(138);
+			mouvementRobot.pivoterDroite(130);
+			mouvementRobot.avancerDe(35);
+			pince.lacherPalet();
+			mouvementRobot.avancerDe(17);
+			pince.recupererPalet();
+
+			mouvementRobot.setOrientation(130);
 		} else if (positionRobotEnFace == 2) {
 			//si le robot est à droite
-			//(90+61,846)=151,846
-			mouvementRobot.pivoterGauche(138);
-			mouvementRobot.setOrientation(-138);
+			mouvementRobot.pivoterGauche(150);
+			mouvementRobot.avancerDe(25);
+			pince.lacherPalet();
+			mouvementRobot.avancerDe(23);
+			pince.recupererPalet();
 		}
-		//aller vers le palet
-		mouvementRobot.avancerDe(48);
-		pince.recupererPalet();
-
-		//aller à la ligne blanche
+		
+		//s'oriente et va à la ligne blanche
 		if (positionRobotEnFace == 0) {
 			//si le robot est à gauche
-			//-(90+61,846)=-151,846
-			mouvementRobot.pivoterDroite(138);
+			mouvementRobot.orienterVersLigneAdverse();
 			mouvementRobot.setOrientation(0);
 
 		} else if (positionRobotEnFace == 1) {
 			//si le robot est au milieu
-			//(90+61,846)=151,846
-			mouvementRobot.pivoterGauche(138);
+			mouvementRobot.orienterVersLigneAdverse();
 			mouvementRobot.setOrientation(0);
 		} else if (positionRobotEnFace == 2) {
 			//si le robot est à droite
-			//(90+61,846)=151,846
-			mouvementRobot.pivoterDroite(138);
+			mouvementRobot.orienterVersLigneAdverse();
 			mouvementRobot.setOrientation(0);
 		}
-		mouvementRobot.avancerContinu(true);
-		boolean res = colorSensor.detecteLigneBlanche();
-		while(!res){
-			res = colorSensor.detecteLigneBlanche();
-			System.out.println(res);
-		}
+		
+		goToWhiteLineAndDrop1erPalet();
 		mouvementRobot.stop();
-		pince.lacherPalet();
 	}
 
 	private void searchAndCollectNextPallet() {
+		//Départ de la méthode au milieu de la table, effectue une recherche
+		//Si la recherche est concluante (la 1ere ou 2ème discontinuité est un palet,
+		//on va le récupérer et 
 
-		//Faire un 360 pour détecter un palet
+		if(moveScan.RechercheEtOrientation()) {
+			System.out.println("Il y a un palet");
+			pince.lacherPalet();
+			mouvementRobot.avancerDe(10);
+			pince.recupererPalet();
+			mouvementRobot.orienterVersLigneAdverse();
+			goToWhiteLineAndDrop();
+			mouvementRobot.reculerDe(10);
+			mouvementRobot.pivoterGauche(163);
+			mouvementRobot.avancerDe(100);
+		}
+		//moveScan.moveForward();
 
-		/*if(){
-//Si on ne trouve pas de palet
-}*/ 
-		mouvementRobot.pivoterGauche(180);
-		mouvementRobot.avancerDe(120);
-		moveScan.RechercheEtOrientation();
-		pince.recupererPalet();
-		mouvementRobot.orienterVersLigneAdverse();
-		goToWhiteLineAndDrop();
+
+		//pince.fermer(500);
+
 	}
 
 
@@ -226,9 +240,9 @@ public class MainClass {
 		double distanceGauche = moveScan.getDistance();
 		mouvementRobot.pivoterDroite(30);
 		double distanceDroite = moveScan.getDistance();
-		
+
 		double tolerance = 10;
-		
+
 		if(distanceCentre - tolerance <= distanceGauche
 				&& distanceGauche <= distanceCentre + tolerance &&
 				distanceCentre - tolerance <= distanceDroite
@@ -252,8 +266,8 @@ public class MainClass {
 			mouvementRobot.pivoterGauche(cpt);
 			//mouvementRobot.avancerDe(avancer);
 		}
-		
-		
+
+
 
 
 	}
