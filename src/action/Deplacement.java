@@ -35,12 +35,12 @@ public class Deplacement {
         // Configure le diamètre et l'écartement des roues en centimètres
     	EV3LargeRegulatedMotor motorA = new EV3LargeRegulatedMotor(A);
     	EV3LargeRegulatedMotor motorC = new EV3LargeRegulatedMotor(C);
-    	Wheel roueGauche = WheeledChassis.modelWheel(motorA, 5.6).offset(-6.2);  // Configuration de la roue gauche
-        Wheel roueDroite = WheeledChassis.modelWheel(motorC, 5.6).offset(6.075);   // Configuration de la roue droite
+    	Wheel roueDroite = WheeledChassis.modelWheel(motorA, 5.6).offset(-6.850); // Configuration de la roue gauche
+        Wheel roueGauche = WheeledChassis.modelWheel(motorC, 5.6).offset(6.850);   // Configuration de la roue droite
         Chassis baseRoues = new WheeledChassis(new Wheel[] {roueGauche, roueDroite}, WheeledChassis.TYPE_DIFFERENTIAL);
         moteurPilotage = new MovePilot(baseRoues);
-        moteurPilotage.setLinearSpeed(25); // Vitesse linéaire définie à 10 cm/s
-        moteurPilotage.setAngularSpeed(50); // Vitesse de rotation modérée
+        moteurPilotage.setLinearSpeed(27); // Vitesse linéaire définie à 10 cm/s
+        moteurPilotage.setAngularSpeed(30); // Vitesse de rotation modérée
         orientation = 0;
     }
 
@@ -60,16 +60,7 @@ public class Deplacement {
         return moteurPilotage.isMoving();
     }
     
-    public void avancerVers1erPalet() {
-		this.avancerDe(62); //vérifier longueur
-	}
-    /**
-     * Récupère l'instance de MovePilot.
-     * @return moteurPilotage
-     */
-    public MovePilot obtenirPilot() {
-        return moteurPilotage;
-    } 
+    
 
     /**
      * Renvoie l'orientation actuelle du robot.
@@ -131,7 +122,7 @@ public class Deplacement {
      */
     public void pivoterGauche(double angleDeRotation) {
         moteurPilotage.rotate(angleDeRotation);
-        ajusterOrientation(angleDeRotation);
+        setOrientation(angleDeRotation);
     }
 
     /**
@@ -141,36 +132,14 @@ public class Deplacement {
      */
     public void pivoterDroite(double angleDeRotation) {
         moteurPilotage.rotate(-angleDeRotation);
-        ajusterOrientation(-angleDeRotation);
+        setOrientation(-angleDeRotation);
     }
 
     
     public void rotate(double angleDeRotation, boolean asynch) {
     	moteurPilotage.rotate(angleDeRotation,asynch);
     }
-    /**
-     * Ajuste l'orientation actuelle en fonction de l'angle de rotation donné.
-     * @param angleDeRotation L'angle ajouté ou soustrait à l'orientation actuelle
-     */
-    private void ajusterOrientation(double angleDeRotation) {
-        orientation += angleDeRotation;
-        if (orientation >= 360) {
-            orientation -= 360;
-        } else if (orientation < 0) {
-            orientation += 360;
-        }
-    }
 
-    /**
-     * Oriente le robot vers sa position de départ, dirigée vers l’en-but adverse.
-     */
-    public void retourInitial() {
-        if (orientation < 180) {
-            pivoterGauche(orientation);
-        } else {
-            pivoterDroite(360 - orientation);
-        }
-    }
 
     /**
      * Oriente le robot vers une position spécifique en degrés.
@@ -185,14 +154,7 @@ public class Deplacement {
             pivoterDroite(angleDiff);
         }
     }
-   /* public void allerVersOrientation(double angleCible) { //contre le sesn des aiguilles 
-        double angleDiff = angleCible - orientation;
-        if (angleDiff > 0) {
-            pivoterDroite(angleDiff);
-        } else {
-            pivoterGauche(-angleDiff);
-        }
-    }*/
+
 
     public void orienterVersLigneAdverse() {
         // L'angle 0 représente la ligne adverse
@@ -200,15 +162,5 @@ public class Deplacement {
         System.out.println("Le robot est maintenant orienté vers la ligne adverse.");
     }
    
-    /*public static void main(String[] args) {
-        // Crée une instance de la classe Deplacement pour contrôler le robot
-        
 
-
-        // Avancer en continu (le robot avancera jusqu'à ce qu'il soit arrêté)
-        System.out.println("Avancer en continu");
-
-
-        
-    }*/
 }
