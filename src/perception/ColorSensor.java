@@ -33,7 +33,7 @@ public class ColorSensor {
 			System.out.println("Light Value: " + lightValue);
 		}
 
-		if (lightValue > 70) {
+		if (lightValue > 40 && lightValue < 80) {
 			b = true; //si la couleur est blanche
 		} 
 		return b;
