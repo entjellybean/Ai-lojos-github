@@ -3,7 +3,7 @@ package perception;
 /**
  * La classe DistanceComparator permet de comparer deux tableaux de doubles
  * en se basant sur la valeur à l'indice 2. 
- * @author 
+ * @author Narta Neziraj
  */
 public class DistanceComparator {
     /**
