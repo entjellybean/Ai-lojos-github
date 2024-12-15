@@ -18,15 +18,24 @@ import lejos.utility.Delay;
 import lejos.hardware.port.SensorPort;
 import lejos.hardware.port.TachoMotorPort;
 
+/**
+ * La classe Pince permet de contrôler les mouvements d'une pince  
+ * sur un robot EV3. 
+ * Elle permet d'ouvrir, fermer, récupérer et lâcher des palets.
+ * @author Zoe Laget Thomas
+ */
 public class Pince {
 
-	private EV3TouchSensor bouton;
-	//le bouton était initialement prévu pour permettre de savoir si il y avait un palet
-	//mais comme il était pas assez sensible, nous ne l'avons pas utilisé dans nos classes au final
+	private EV3TouchSensor bouton; // Capteur tactile 
+	EV3MediumRegulatedMotor motorPince; // Moteur contrôlant la pince
 	
-	EV3MediumRegulatedMotor motorPince;
-	
-	// Constructeur pour initialiser le moteur de la pince
+	/**
+        * Constructeur de la classe Pince.
+        * Initialise le moteur de la pince et le capteur tactile.
+        *
+        * @param B Port pour le moteur de la pince.
+        * @param s3 Port pour le capteur tactile.
+        */
 	public Pince(Port B,Port s3) {
 		
 		motorPince = new EV3MediumRegulatedMotor(B); 
@@ -34,33 +43,53 @@ public class Pince {
 		
 	}
 
+	/**
+        * Ouvre la pince 
+        *
+        * @param a Angle de rotation en degrés pour ouvrir la pince.
+        */
 	public void ouvrir(int a) {
-		// Ouvre la pince
 		motorPince.rotate(a);
 	}
-
+	
+	/**
+        * Ferme la pince en tournant le moteur dans la direction opposée.
+        *
+        * @param a Angle de rotation en degrés pour fermer la pince.
+        */
 	public void fermer(int a) {
-		// Fermer la pince
 		motorPince.rotate(-a);
 	}
 
+        /**
+        * Arrête le moteur de la pince immédiatement.
+        */
 	public void stop() {
-		// Ferme le moteur de la pince
 		motorPince.stop();
 	}
 
+        /**
+        * Ferme la pince pour récupérer un palet.
+        * Cette méthode ferme la pince et renvoie true pour indiquer que 
+        * le palet est supposé être récupéré.
+        *
+        * @return true si le palet est récupéré.
+        */
 	public boolean recupererPalet() {
-		// Ferme les pinces et renvoit vrai si le palet est récupéré
 		fermer(1500);
 		return true;
 	}
 
-
+	/**
+        * Ouvre la pince pour relâcher un palet.
+        */
 	public void lacherPalet() {
-		// Ouvre les pinces
 		ouvrir(1500);
 	}
-	
+
+	/**
+        * Arrête et termine l'utilisation du moteur de la pince.
+        */
 	public void close() {
 		//ferme le moteur de la pince
 		this.motorPince.close();
