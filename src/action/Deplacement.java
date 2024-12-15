@@ -29,7 +29,7 @@ public class Deplacement {
         Wheel roueGauche = WheeledChassis.modelWheel(motorC, 5.6).offset(6.850);   // Configuration de la roue droite
         Chassis baseRoues = new WheeledChassis(new Wheel[] {roueGauche, roueDroite}, WheeledChassis.TYPE_DIFFERENTIAL);
         moteurPilotage = new MovePilot(baseRoues);
-        moteurPilotage.setLinearSpeed(27); // Vitesse linéaire définie à 10 cm/s
+        moteurPilotage.setLinearSpeed(27); // Vitesse linéaire définie à 27 cm/s
         moteurPilotage.setAngularSpeed(30); // Vitesse de rotation modérée
         orientation = 0;
     }
