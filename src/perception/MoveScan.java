@@ -17,6 +17,7 @@ import lejos.utility.Delay;
 
 /**
  * Classe pour gérer le mouvement du robot et effectuer des scans à l'aide d'un capteur ultrason.
+ * @author Narta Neziraj
  */
 public class MoveScan {
     Deplacement deplacement; // Contrôle du robot
