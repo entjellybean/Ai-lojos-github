@@ -1,4 +1,4 @@
-Rapport final 
+## Rapport final 
 
 1. Bilan du projet : 
 
@@ -9,7 +9,7 @@ Aussi, pour conclure plus généralement sur la maîtrise de ce projet, nous avo
 Ainsi, malgré le fait que notre code n’était pas parfaitement abouti, nous avons su réaliser un robot qui était capable de récupérer des palets, aller jusqu’à la ligne blanche et faire une recherche relativement performante en prenant soin d’éviter les obstacles, ce qui est déjà une réussite en soit.  
 Nous avons terminé la compétition à la 4ème place, avec 2 victoires sur 4 matchs. Voici notre analyse des points positifs et des points à améliorer :
 
-Points Positifs
+### Points Positifs
 
 * Recherche du palet : Notre méthode de recherche a bien fonctionné. Le robot a réussi à identifier le palet lorsque celui-ci était présent.  
 * Évitement d'Obstacles : Le robot a correctement évité les murs à proximité tout en continuant sa recherche.  
